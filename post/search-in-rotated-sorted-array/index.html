@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Find Minimum in Rotated Sorted Array | ama-non</title>
+<title>Search in Rotated Sorted Array | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556021754778">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -72,7 +72,7 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Find Minimum in Rotated Sorted Array
+              Search in Rotated Sorted Array
             </h2>
             <div class="post-info">
               <time class="post-time">
@@ -90,74 +90,72 @@
             </div>
             
             <div class="post-content">
-              <h1 id="find-minimum-in-rotated-sorted-array">Find Minimum in Rotated Sorted Array</h1>
+              <h1 id="search-in-rotated-sorted-array">Search in Rotated Sorted Array</h1>
 <p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).</p>
-<p>Find the minimum element.</p>
+<p>(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).</p>
+<p>You are given a target value to search. If found in the array return its index, otherwise return -1.</p>
 <p>You may assume no duplicate exists in the array.</p>
+<p>Your algorithm's runtime complexity must be in the order of O(log n).</p>
 <p><strong>Example 1:</strong>
-<strong>Input:</strong> [3,4,5,1,2]
-<strong>Output:</strong> 1</p>
+<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
+<strong>Output:</strong> 4</p>
 <p><strong>Example 2:</strong>
-<strong>Input:</strong> [4,5,6,7,0,1,2]
-<strong>Output:</strong> 0</p>
+<strong>Input:</strong> [nums = [4,5,6,7,0,1,2], target = 3
+<strong>Output:</strong> -1</p>
 <hr>
-<h3 id="分析">分析：</h3>
+<h3 id="分析">分析:</h3>
 <blockquote>
-<p>从左向右扫描，扫描到的第一个逆序的位置，肯定是原始数组中第一个元素，时间复杂度O(n)。
-不过本题依旧可以用二分查找，最关键的是要判断那个“断层”是在左边还是右边。</p>
+<p>一个有序数组被循环右移，只可能有一下两种情况：</p>
 </blockquote>
-<ul>
-<li>若A[mid] &lt; A[right]，则区间[mid,right]一定递增，断层一定在左边</li>
-</ul>
-<ul>
-<li>若A[mid] &gt; A[right]，则区间[left,mid]一定递增，断层一定在右边</li>
-</ul>
-<ul>
-<li>nums[mid] == nums[right]，这种情况不可能发生，因为数组是严格单调递增的，不存在重复元素</li>
-</ul>
-<hr>
-<h3 id="思路一">思路一：</h3>
-<pre><code>public class Solution {
-    public int findMin(int[] nums) {
-       for(int i = 1; i &lt; nums.length; i++){
-           if(nums[i] &lt; nums[i-1]){
-               return nums[i];
-           }
-       }
-       return nums[0];
-    }
-}
-</code></pre>
-<p><em>时间复杂度o(n)</em></p>
-<h3 id="思路二">思路二：</h3>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1pgjncrgsj307i0dvwei.jpg" alt=""></p>
+<blockquote>
+<p>本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
+如果A[left] &lt;= A[mid],那么[left,mid] 一定为单调递增序列。</p>
+</blockquote>
 <pre><code>class Solution {
 public:
-    int findMin(vector&lt;int&gt; &amp;num) {
-        int lo = 0, hi = num.size()-1;
-        while (lo &lt; hi) {
-              int mid = ( lo + hi) / 2;
-              if (num[mid] &gt; num[hi]) lo = mid + 1;
-              else hi = mid;
+    int search(const vector&lt;int&gt;&amp; nums, int target) {
+        int first = 0, last = nums.size();
+        while (first != last) {
+            const int mid = first  + (last - first) / 2;
+            if (nums[mid] == target)
+                return mid;
+            if (nums[first] &lt;= nums[mid]) {
+                if (nums[first] &lt;= target &amp;&amp; target &lt; nums[mid])
+                    last = mid;
+                else
+                    first = mid + 1;
+            } else {
+                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[last-1])
+                    first = mid + 1;
+                else
+                    last = mid;
+            }
         }
-        return num[lo];
+        return -1;
     }
 };
 </code></pre>
-<p><em>时间复杂度o(log^n)</em></p>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://www.cnblogs.com/anne-vista/p/4899735.html">https://www.cnblogs.com/anne-vista/p/4899735.html</a></li>
-</ul>
-<ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/find-minimum-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/find-minimum-in-rotated-sorted-array.html</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html</a></li>
 </ul>
 
             </div>
           </article>
         </div>
     
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/find-minimum-in-rotated-sorted-array">
+              <h3 class="post-title">
+                Find Minimum in Rotated Sorted Array
+              </h3>
+            </a>
+          </div>  
         
 
         
