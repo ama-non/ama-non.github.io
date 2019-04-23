@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kth Largest Element in an Array | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556025940738">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556026010205">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556025940738" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556026010205" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -94,24 +94,16 @@ You may assume k is always valid, 1 ≤ k ≤ array's length.</p>
 <hr>
 <h3 id="思路">思路：</h3>
 <blockquote>
-<ul>
+<ol>
 <li>按从大到小全排序，然后取第k个元素，时间复杂度O(nlogn)，空间复杂度O(1)</li>
-</ul>
-<ul>
 <li>利用堆进行部分排序。维护一个大根堆，将数组元素全部压入堆，然后弹出k次，第k个就是答案。时间复杂度O(klogn)，空间复杂度O(n)</li>
-</ul>
-<ul>
 <li>选择排序，第k次选择后即可得到第k大的数，时间复杂度O(nk)，空间复杂度O(1)</li>
-</ul>
-<ul>
 <li>堆排序，维护一个k大小的小根堆，将数组中的每个元素与堆顶元素进行比较，如果比堆顶元素大，则删除堆顶元素并添加该元素，如果比堆顶元素小，则什么也不做，继续下一个元素。时间复杂度O(nlogk)，空间复杂度O(k)。</li>
-</ul>
-<ul>
 <li>利用快速排序中的partition思想，从数组中随机选择一个元素x，把数组划分为前后两部分sa和sb，sa中的元素小于x，sb中的元素大于或等于x。这时有两种情况：
 sa的元素个数小于k，则递归求解sb中的第k-|sa|大的元素
 sa的元素个数大于或等于k，则递归求解sa中的第k大的元素
 时间复杂度O(n)，空间复杂度O(1)</li>
-</ul>
+</ol>
 <p>思路4和5比较高效，可以接受，其他思路太慢了，不采纳。</p>
 </blockquote>
 <hr>
