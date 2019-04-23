@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Search in Rotated Sorted Array | ama-non</title>
+<title>数组中出现次数超过一半的数字 | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556023652414">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -72,7 +72,7 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Search in Rotated Sorted Array
+              数组中出现次数超过一半的数字
             </h2>
             <div class="post-info">
               <time class="post-time">
@@ -90,57 +90,52 @@
             </div>
             
             <div class="post-content">
-              <h1 id="search-in-rotated-sorted-array">Search in Rotated Sorted Array</h1>
-<p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).</p>
-<p>You are given a target value to search. If found in the array return its index, otherwise return -1.</p>
-<p>You may assume no duplicate exists in the array.</p>
-<p>Your algorithm's runtime complexity must be in the order of O(log n).</p>
-<p><strong>Example 1:</strong>
-<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
-<strong>Output:</strong> 4</p>
-<p><strong>Example 2:</strong>
-<strong>Input:</strong> [nums = [4,5,6,7,0,1,2], target = 3
-<strong>Output:</strong> -1</p>
+              <h1 id="数组中出现次数超过一半的数字">数组中出现次数超过一半的数字</h1>
+<p>数组中有一个数字出现次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。</p>
+<p>由于数字2在数组中出现了5次，超过数组长度一半，因此输出2</p>
 <hr>
-<h3 id="分析">分析:</h3>
+<h3 id="分析">分析：</h3>
 <blockquote>
-<p>一个有序数组被循环右移，只可能有以下两种情况：</p>
+<p>为了后面的解释，我们首先定义：</p>
 </blockquote>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1pgjncrgsj307i0dvwei.jpg" alt=""></p>
-<blockquote>
-<p>本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
-如果A[left] &lt;= A[mid],那么[left,mid] 一定为单调递增序列。</p>
-</blockquote>
-<pre><code>class Solution {
-public:
-    int search(const vector&lt;int&gt;&amp; nums, int target) {
-        int first = 0, last = nums.size();
-        while (first != last) {
-            const int mid = first  + (last - first) / 2;
-            if (nums[mid] == target)
-                return mid;
-            if (nums[first] &lt;= nums[mid]) {
-                if (nums[first] &lt;= target &amp;&amp; target &lt; nums[mid])
-                    last = mid;
-                else
-                    first = mid + 1;
-            } else {
-                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[last-1])
-                    first = mid + 1;
-                else
-                    last = mid;
-            }
+<p><em><strong>对于数组A，出现次数超过一半的数记为H(A)</strong></em></p>
+<blockquote></blockquote>
+<p>还是以之前的数组A{1,2,3,2,2,2,5,4,2}为例,首先有H(A) = 2，我们观察一下这个2的特点：</p>
+<blockquote></blockquote>
+<p>如果把前两个数1和2去掉，剩下的数组A'是{3,2,2,2,5,4,2}，H(A')依然为2！</p>
+<blockquote></blockquote>
+<p>更进一步，我们可以这么想，既然前两个数去掉之后不影响找出现次数超过数组长度的一半的数字，那么任意去掉相邻的两个数字也不影响呢。</p>
+<blockquote></blockquote>
+<p>也就是说对于任意数组A和A去掉两个相邻数字的子数组A'是否都有:H(A) = H(A')</p>
+<blockquote></blockquote>
+<p>很不幸，这个结论也不成立，因为如果在刚刚的数组A中去掉连续的两个2，就不对了。但是只要稍稍把结论修改一下就是成立的：</p>
+<blockquote></blockquote>
+<p><em><strong>对于任意数组A，去掉A中任意两个相邻但不相等的数，得到数组A',总有H(A) = H(A')</strong></em></p>
+<blockquote></blockquote>
+<p>结论很好证明：设H(A) = p,去掉的两个数中最多有一个p，由于p原来出现的次数大于n/2，现在p-1自然一定大于(n-2)/2。所以H（A'）= p。</p>
+<hr>
+<h3 id="实现">实现：</h3>
+<p>有了刚刚的结论，再看这个数组就简单多了。只要把数组从头到尾遍历一遍，剔除相邻的不同的数就可以。比如数组中有一段是{1，2，3，4}，可以预见到，有可能是{2，3}先被比较，然后被剔除，接着是{1，4}变成相邻的，接着被剔除。</p>
+<p>为了避免反复循环，在一个循环里解决问题，自然而然的想到了一个数据结构——“栈”。</p>
+<p>只要对于数组中的每一个元素，如果栈为空或这个元素与栈顶元素相同，则这个元素入栈，否则栈顶元素出栈即可。这样一来，不相同的数即使不相邻，迟早也会一起出栈（可以把用来和栈顶做比较元素想象为先入栈再出栈）。</p>
+<p>所以这样一来，代码会非常简洁优雅：</p>
+<pre><code>int findNumber(std::vector&lt;int&gt; v){  
+    std::stack&lt;int&gt; stack = std::stack&lt;int&gt;();
+    for (int i = 0; i &lt; v.size(); ++i) {
+        if (stack.empty() || stack.top() == v[i]) {
+            stack.push(v[i]);
         }
-        return -1;
+        else{
+            stack.pop();
+        }
     }
-};
+    return stack.top();
+}
 </code></pre>
-<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html</a></li>
+<li><a href="https://bestswifter.com/arrayoccurmorethanhalf/">https://bestswifter.com/arrayoccurmorethanhalf/</a></li>
 </ul>
 
             </div>
@@ -150,9 +145,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/find-minimum-in-rotated-sorted-array">
+            <a href="https://ama-non.github.io/post/search-in-rotated-sorted-array">
               <h3 class="post-title">
-                Find Minimum in Rotated Sorted Array
+                Search in Rotated Sorted Array
               </h3>
             </a>
           </div>  
