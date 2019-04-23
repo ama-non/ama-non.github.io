@@ -1,0 +1,251 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kth Largest Element in an Array | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556025852402">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556025852402" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Kth Largest Element in an Array
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-23 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <h1 id="kth-largest-element-in-an-array">Kth Largest Element in an Array</h1>
+<p>Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.</p>
+<p><strong>Example 1:</strong>
+<strong>Input:</strong> [3,2,1,5,6,4] and k = 2
+<strong>Output:</strong> 5</p>
+<p><strong>Example 2:</strong>
+<strong>Input:</strong> [3,2,3,1,2,4,5,5,6] and k = 4
+<strong>Output:</strong> 4</p>
+<p><strong>Note：</strong>
+You may assume k is always valid, 1 ≤ k ≤ array's length.</p>
+<hr>
+<h3 id="思路">思路：</h3>
+<blockquote>
+<ul>
+<li>按从大到小全排序，然后取第k个元素，时间复杂度O(nlogn)，空间复杂度O(1)</li>
+</ul>
+<ul>
+<li>利用堆进行部分排序。维护一个大根堆，将数组元素全部压入堆，然后弹出k次，第k个就是答案。时间复杂度O(klogn)，空间复杂度O(n)</li>
+</ul>
+<ul>
+<li>选择排序，第k次选择后即可得到第k大的数，时间复杂度O(nk)，空间复杂度O(1)</li>
+</ul>
+<ul>
+<li>堆排序，维护一个k大小的小根堆，将数组中的每个元素与堆顶元素进行比较，如果比堆顶元素大，则删除堆顶元素并添加该元素，如果比堆顶元素小，则什么也不做，继续下一个元素。时间复杂度O(nlogk)，空间复杂度O(k)。</li>
+</ul>
+<ul>
+<li>利用快速排序中的partition思想，从数组中随机选择一个元素x，把数组划分为前后两部分sa和sb，sa中的元素小于x，sb中的元素大于或等于x。这时有两种情况：
+sa的元素个数小于k，则递归求解sb中的第k-|sa|大的元素
+sa的元素个数大于或等于k，则递归求解sa中的第k大的元素
+时间复杂度O(n)，空间复杂度O(1)</li>
+</ul>
+<p>思路4和5比较高效，可以接受，其他思路太慢了，不采纳。</p>
+</blockquote>
+<hr>
+<h3 id="思路4快排">思路4：快排</h3>
+<pre><code>class Solution {
+public:
+	int partition(vector&lt;int&gt;&amp; nums, int i, int j)
+	{
+		if (i == j) return i;
+
+		int pivot = nums[i];
+		std::swap(nums[i], nums[j]);
+		
+		int i0 = i;
+		for(int k = i; k &lt; j; k ++)
+		{
+			if(nums[k] &lt;= pivot)
+			{
+				std::swap(nums[k], nums[i0 ++]);
+			}
+		}
+		std::swap(nums[i0], nums[j]);
+		return i0;
+	}
+    int findKthLargest(vector&lt;int&gt;&amp; nums, int k) 
+	{
+		size_t len = nums.size();
+		int pi = 0;
+		int tgt = len - k;
+
+		int a = 0, b = len - 1;
+		while((pi = partition(nums, a, b)) != tgt)
+		{
+			if(pi &lt; tgt)
+			{
+				a = pi + 1;
+			}
+			else if(pi &gt; tgt)
+			{
+				b = pi - 1;
+			}
+		}
+		return nums[pi];
+    }
+};
+</code></pre>
+<hr>
+<h3 id="思路5min-heap">思路5：min-heap</h3>
+<pre><code>class Solution {
+public:
+    int findKthLargest(vector&lt;int&gt;&amp; nums, int k) 
+	{
+		size_t len = nums.size();
+		if(len &lt; k) return 0;
+
+		priority_queue&lt;int, std::vector&lt;int&gt;, std::greater&lt;int&gt;&gt; q;
+		for(auto &amp;v : nums)
+		{
+			if(q.size() &lt; k)
+			{
+				q.push(v);
+			}
+			else if (v &gt; q.top())
+			{
+				q.pop();
+				q.push(v);
+			}
+		}
+        return q.top();
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/discuss/60442/C%2B%2B-solutions%3A-O(nlgk)-by-Min-Heap-and-O(n)-by-partition">https://leetcode.com/problems/kth-largest-element-in-an-array/discuss/60442/C%2B%2B-solutions%3A-O(nlgk)-by-Min-Heap-and-O(n)-by-partition</a></li>
+</ul>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/sorting/quick-sort/kth-largest-element-in-an-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/sorting/quick-sort/kth-largest-element-in-an-array.html</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi">
+              <h3 class="post-title">
+                数组中出现次数超过一半的数字
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
