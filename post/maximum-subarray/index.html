@@ -1,0 +1,239 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maximum Subarray | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556107127443">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556107127443" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Maximum Subarray
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-24 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/nXVL0nor1" class="post-tags">
+                  # 动态规划
+                </a>
+              
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.</p>
+<p><strong>Example 1:</strong>
+<strong>Input:</strong> [-2,1,-3,4,-1,2,1,-5,4],
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> [4,-1,2,1] has the largest sum = 6.</p>
+<p><strong>Follow up:</strong>
+If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.</p>
+<hr>
+<h3 id="分析">分析</h3>
+<blockquote>
+<p>当我们从头到尾遍历这个数组的时候，对于数组里的一个整数，它有几种选择呢？它只有两种选择： 1、加入之前的SubArray；2. 自己另起一个SubArray。那什么时候会出现这两种情况呢？
+如果之前SubArray的总体和大于0的话，我们认为其对后续结果是有贡献的。这种情况下我们选择加入之前的SubArray
+如果之前SubArray的总体和为0或者小于0的话，我们认为其对后续结果是没有贡献，甚至是有害的（小于0时）。这种情况下我们选择以这个数字开始，另起一个SubArray。
+设状态为f[j]，表示以S[j]结尾的最大连续子序列和，则状态转移方程如下：</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1okf1y8i9j30bd024gln.jpg" alt="状态转移方程">
+解释如下：</p>
+<ul>
+<li>情况一：S[j]不独立，与前面的某些数组成一个连续子序列，则最大连续子序列和为f[j-1]+S[j]。</li>
+</ul>
+<ul>
+<li>情况二：S[j]独立划分成为一段，即连续子序列仅包含一个数S[j]，则最大连续子序列和为S[j]。
+其他思路：</li>
+</ul>
+<ul>
+<li>思路2：直接在i到j之间暴力枚举，复杂度是O(n^3)</li>
+</ul>
+<ul>
+<li>思路3：处理后枚举，连续子序列的和等于两个前缀和之差，复杂度O(n^2)。</li>
+</ul>
+<ul>
+<li>思路4：分治法，把序列分为两段，分别求最大连续子序列和，然后归并，复杂度O(nlog n)</li>
+</ul>
+<ul>
+<li>思路5：把思路2O(n^2)的代码稍作处理，得到O(n)的算法</li>
+</ul>
+<ul>
+<li>思路6：当成M=1的最大M子段和</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="思路动态规划">思路：动态规划</h3>
+<pre><code>class Solution {
+public:
+    int maxSubArray(const vector&lt;int&gt;&amp; nums) {
+        int maxLocal = nums[0];
+        int global = nums[0];
+        for (int i = 1; i &lt; nums.size(); ++i) {
+            maxLocal = max(nums[i], nums[i] + maxLocal);
+            global = max(global, maxLocal);
+        }
+        return global;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路5">思路5</h3>
+<pre><code>class Solution {
+public:
+    int maxSubArray(vector&lt;int&gt;&amp; A) {
+        return mcss(A.begin(), A.end());
+    }
+private:
+    // 思路5，求最大连续子序列和
+    template &lt;typename Iter&gt;
+    static int mcss(Iter begin, Iter end) {
+        int result, cur_min;
+        const int n = distance(begin, end);
+        int *sum = new int[n + 1];  // 前n项和
+
+        sum[0] = 0;
+        result = INT_MIN;
+        cur_min = sum[0];
+        for (int i = 1; i &lt;= n; i++) {
+            sum[i] = sum[i - 1] + *(begin  + i - 1);
+        }
+        for (int i = 1; i &lt;= n; i++) {
+            result = max(result, sum[i] - cur_min);
+            cur_min = min(cur_min, sum[i]);
+        }
+        delete[] sum;
+        return result;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(n)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/dp/maximum-subarray.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/dp/maximum-subarray.html</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/kth-largest-element-in-an-array">
+              <h3 class="post-title">
+                Kth Largest Element in an Array
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
