@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Regular Expression Matching | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556107509797">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556107509797" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Regular Expression Matching
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-24 ·
+              </time>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Given an input string (s) and a pattern (p), implement regular expression matching with support for '.' and '*'.</p>
+<ul>
+<li>'.' Matches any single character.</li>
+</ul>
+<ul>
+<li>'*' Matches zero or more of the preceding element.</li>
+</ul>
+<p>The matching should cover the <strong>entire</strong> input string (not partial).</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>s could be empty and contains only lowercase letters a-z.</li>
+</ul>
+<ul>
+<li>p could be empty and contains only lowercase letters a-z, and characters like . or *.</li>
+</ul>
+<hr>
+<h3 id="思路一递归">思路一：递归</h3>
+<pre><code>class Solution {
+public:
+    bool isMatch(const string&amp; s, const string&amp; p) {
+        return isMatch(s.c_str(), p.c_str());
+    }
+private:
+    bool matchFirst(const char *s, const char *p) {
+        return *p == *s || (*p == '.' &amp;&amp; *s != '\0');
+    }
+
+    bool isMatch(const char *s, const char *p) {
+        if (*p == '\0') return *s == '\0';    //empty
+
+        // next char is not '*', then must match current character
+        if (*(p + 1) != '*') {
+            if (matchFirst(s, p)) return isMatch(s + 1, p + 1);
+            else return false;
+        } else { // next char is '*'
+            if (isMatch(s, p + 2)) return true;    // try the length of 0
+            while ( matchFirst(s, p) )       // try all possible lengths 
+                if (isMatch(++s, p + 2)) return true;
+            return false;
+        }
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路二动态规划">思路二：动态规划</h3>
+<p><a href="%5Bhttps://www.youtube.com/watch?v=l3hda49XcDE&amp;list=PLrmLmBdmIlpuE5GEMDXWf0PWbBD9Ga1lO">算法解析</a>
+<img src="https://ws2.sinaimg.cn/large/006tNc79ly1g229phb6b3j30l10anwi2.jpg" alt="状态方程"></p>
+<pre><code>class Solution {
+public:
+    bool isMatch(string s, string p) {
+        /**
+         * f[i][j]: if s[0..i-1] matches p[0..j-1]
+         * if p[j - 1] != '*'
+         *      f[i][j] = f[i - 1][j - 1] &amp;&amp; s[i - 1] == p[j - 1]
+         * if p[j - 1] == '*', denote p[j - 2] with x
+         *      f[i][j] is true iff any of the following is true
+         *      1) &quot;x*&quot; repeats 0 time and matches empty: f[i][j - 2]
+         *      2) &quot;x*&quot; repeats &gt;= 1 times and matches &quot;x*x&quot;: s[i - 1] == x &amp;&amp; f[i - 1][j]
+         * '.' matches any single character
+         */
+        int m = s.size(), n = p.size();
+        vector&lt;vector&lt;bool&gt;&gt; f(m + 1, vector&lt;bool&gt;(n + 1, false));
+
+        f[0][0] = true;
+
+        // Deals with patterns like a* or a*b*c*
+        for (int j = 1; j &lt;= n; j++)
+            f[0][j] = '*' == p[j - 1] &amp;&amp; f[0][j - 2];
+
+        for (int i = 1; i &lt;= m; i++)
+            for (int j = 1; j &lt;= n; j++)
+                if (p[j - 1] != '*')
+                    f[i][j] = f[i - 1][j - 1] &amp;&amp; (s[i - 1] == p[j - 1] || '.' == p[j - 1]);
+                else
+                    // p[0] cannot be '*' so no need to check &quot;j &gt; 1&quot; here
+                    f[i][j] = f[i][j - 2] || (s[i - 1] == p[j - 2] || '.' == p[j - 2]) &amp;&amp; f[i - 1][j];
+
+        return f[m][n];
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(mn),空间复杂度o(mn)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=l3hda49XcDE&amp;list=PLrmLmBdmIlpuE5GEMDXWf0PWbBD9Ga1lO">https://www.youtube.com/watch?v=l3hda49XcDE&amp;list=PLrmLmBdmIlpuE5GEMDXWf0PWbBD9Ga1lO</a></li>
+</ul>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/regular-expression-matching.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/regular-expression-matching.html</a></li>
+</ul>
+<ul>
+<li><a href="http://xiaohuiliucuriosity.blogspot.com/2014/12/regular-expression-matching.html"></a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/maximum-subarray">
+              <h3 class="post-title">
+                Maximum Subarray
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
