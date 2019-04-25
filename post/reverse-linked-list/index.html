@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Search in Rotated Sorted Array | ama-non</title>
+<title>Reverse Linked List | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556178038629">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,80 +76,92 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Search in Rotated Sorted Array
+              Reverse Linked List
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-23 ·
+                · 2019-04-25 ·
               </time>
+              
+                <a href="https://ama-non.github.io/tag/omyGTg22P" class="post-tags">
+                  # 链表
+                </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
                   # LeetCode
                 </a>
               
-                <a href="https://ama-non.github.io/tag/TJwhFDnCF" class="post-tags">
-                  # 数组
-                </a>
-              
             </div>
             
             <div class="post-content">
-              <p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).</p>
-<p>You are given a target value to search. If found in the array return its index, otherwise return -1.</p>
-<p>You may assume no duplicate exists in the array.</p>
-<p>Your algorithm's runtime complexity must be in the order of O(log n).</p>
+              <p>Reverse a singly linked list.</p>
 <p><strong>Example 1:</strong>
-<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
-<strong>Output:</strong> 4</p>
-<p><strong>Example 2:</strong>
-<strong>Input:</strong> [nums = [4,5,6,7,0,1,2], target = 3
-<strong>Output:</strong> -1</p>
+<strong>Input:</strong> 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+<strong>Output:</strong> 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</p>
+<p><strong>Follow up:</strong>
+A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
 <hr>
-<h3 id="分析">分析:</h3>
+<h3 id="分析">分析：</h3>
 <blockquote>
-<p>一个有序数组被循环右移，只可能有以下两种情况：</p>
-<center>
+<p>用三个指针 tail,p,q，紧紧相邻，不断前进，每次将p.next指向tail，将q.next指向p。</p>
 </blockquote>
-<pre><code>&lt;img style=&quot;border-radius: 0.3125em;
-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);&quot; 
-src=&quot;https://ws3.sinaimg.cn/large/006tKfTcly1g1pgjncrgsj307i0dvwei.jpg&quot;&gt;
-</code></pre>
-</center> 
-<br>
-<blockquote>
-<p>本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
-如果A[left] &lt;= A[mid],那么[left,mid] 一定为单调递增序列。</p>
-</blockquote>
-<pre><code>class Solution {
+<hr>
+<h3 id="思路一迭代">思路一：迭代</h3>
+<pre><code>/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
 public:
-    int search(const vector&lt;int&gt;&amp; nums, int target) {
-        int first = 0, last = nums.size();
-        while (first != last) {
-            const int mid = first  + (last - first) / 2;
-            if (nums[mid] == target)
-                return mid;
-            if (nums[first] &lt;= nums[mid]) {
-                if (nums[first] &lt;= target &amp;&amp; target &lt; nums[mid])
-                    last = mid;
-                else
-                    first = mid + 1;
-            } else {
-                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[last-1])
-                    first = mid + 1;
-                else
-                    last = mid;
-            }
+    ListNode* reverseList(ListNode* head) {
+        ListNode *pre = NULL;
+        ListNode *cur = head;
+        ListNode *next = NULL;
+        while (cur) {
+            next = cur-&gt;next;
+            cur-&gt;next = pre;
+            pre = cur;
+            cur = next;
         }
-        return -1;
+        return pre;
     }
 };
 </code></pre>
-<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路二递归">思路二：递归</h3>
+<pre><code>/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if (head == NULL || head-&gt;next == NULL) {
+            return head;
+        }
+        ListNode* reversedListHead = reverseList(head-&gt;next);
+        head-&gt;next-&gt;next = head;
+        head-&gt;next = NULL;
+        return reversedListHead;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n)，空间复杂度o(n)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list.html</a></li>
+</ul>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=O0By4Zq0OFc">https://www.youtube.com/watch?v=O0By4Zq0OFc</a></li>
 </ul>
 
             </div>
@@ -159,9 +171,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/find-minimum-in-rotated-sorted-array">
+            <a href="https://ama-non.github.io/post/regular-expression-matching">
               <h3 class="post-title">
-                Find Minimum in Rotated Sorted Array
+                Regular Expression Matching
               </h3>
             </a>
           </div>  
