@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Search in Rotated Sorted Array | ama-non</title>
+<title>Delete Node in a Linked List | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556180388651">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,81 +76,52 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Search in Rotated Sorted Array
+              Delete Node in a Linked List
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-23 ·
+                · 2019-04-25 ·
               </time>
-              
-                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
-                  # LeetCode
-                </a>
-              
-                <a href="https://ama-non.github.io/tag/TJwhFDnCF" class="post-tags">
-                  # 数组
-                </a>
               
             </div>
             
             <div class="post-content">
-              <p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).</p>
-<p>You are given a target value to search. If found in the array return its index, otherwise return -1.</p>
-<p>You may assume no duplicate exists in the array.</p>
-<p>Your algorithm's runtime complexity must be in the order of O(log n).</p>
+              <p>Write a function to delete a node (except the tail) in a singly linked list, given only access to that node.</p>
+<p>Given linked list -- head = [4,5,1,9], which looks like following:
+4 -&gt; 5 -&gt; 1 -&gt; 9</p>
 <p><strong>Example 1:</strong>
-<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
-<strong>Output:</strong> 4</p>
+<strong>Input:</strong> head = [4,5,1,9], node = 5
+<strong>Output:</strong> [4,1,9]
+<strong>Explanation:</strong> You are given the second node with value 5, the linked list should become 4 -&gt; 1 -&gt; 9 after calling your function.</p>
 <p><strong>Example 2:</strong>
-<strong>Input:</strong> [nums = [4,5,6,7,0,1,2], target = 3
-<strong>Output:</strong> -1</p>
+<strong>Input:</strong> head = [4,5,1,9], node = 1
+<strong>Output:</strong> [4,5,9]
+<strong>Explanation:</strong> You are given the third node with value 1, the linked list should become 4 -&gt; 5 -&gt; 9 after calling your function.</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>The linked list will have at least two elements.</li>
+</ul>
+<ul>
+<li>All of the nodes' values will be unique.</li>
+</ul>
+<ul>
+<li>The given node will not be the tail and it will always be a valid node of the linked list.</li>
+</ul>
+<ul>
+<li>Do not return anything from your function.</li>
+</ul>
 <hr>
-<h3 id="分析">分析:</h3>
-<blockquote>
-<p>一个有序数组被循环右移，只可能有以下两种情况：</p>
-<center>
-</blockquote>
-<pre><code>&lt;img style=&quot;border-radius: 0.3125em;
-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);&quot; 
-src=&quot;https://ws3.sinaimg.cn/large/006tKfTcly1g1pgjncrgsj307i0dvwei.jpg&quot;&gt;
-</code></pre>
-</center> 
-<br>
-<blockquote>
-<p>本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
-如果A[left] &lt;= A[mid],那么[left,mid] 一定为单调递增序列。</p>
-</blockquote>
+<p>注意释放删除节点</p>
 <pre><code>class Solution {
 public:
-    int search(const vector&lt;int&gt;&amp; nums, int target) {
-        int first = 0, last = nums.size();
-        while (first != last) {
-            const int mid = first  + (last - first) / 2;
-            if (nums[mid] == target)
-                return mid;
-            if (nums[first] &lt;= nums[mid]) {
-                if (nums[first] &lt;= target &amp;&amp; target &lt; nums[mid])
-                    last = mid;
-                else
-                    first = mid + 1;
-            } else {
-                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[last-1])
-                    first = mid + 1;
-                else
-                    last = mid;
-            }
-        }
-        return -1;
+    void deleteNode(ListNode* node) {
+       auto next = node-&gt;next;
+       *node = *next;
+       delete next;
     }
 };
 </code></pre>
-<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
-<hr>
-<h5 id="参考来源">参考来源：</h5>
-<ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html</a></li>
-</ul>
+<p><em>时间复杂度o(1),空间复杂度o(1)</em></p>
 
             </div>
           </article>
@@ -159,9 +130,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/find-minimum-in-rotated-sorted-array">
+            <a href="https://ama-non.github.io/post/reverse-linked-list">
               <h3 class="post-title">
-                Find Minimum in Rotated Sorted Array
+                Reverse Linked List
               </h3>
             </a>
           </div>  
