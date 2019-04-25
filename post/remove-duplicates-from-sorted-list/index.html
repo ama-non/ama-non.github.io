@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Search in Rotated Sorted Array | ama-non</title>
+<title>Remove Duplicates from Sorted List | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556205359631">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,72 +76,75 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Search in Rotated Sorted Array
+              Remove Duplicates from Sorted List
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-23 ·
+                · 2019-04-25 ·
               </time>
-              
-                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
-                  # LeetCode
-                </a>
-              
-                <a href="https://ama-non.github.io/tag/TJwhFDnCF" class="post-tags">
-                  # 数组
-                </a>
               
             </div>
             
             <div class="post-content">
-              <p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).</p>
-<p>You are given a target value to search. If found in the array return its index, otherwise return -1.</p>
-<p>You may assume no duplicate exists in the array.</p>
-<p>Your algorithm's runtime complexity must be in the order of O(log n).</p>
+              <p>Given a sorted linked list, delete all duplicates such that each element appear only once.</p>
 <p><strong>Example 1:</strong><br>
-<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
-<strong>Output:</strong> 4</p>
+<strong>Input:</strong> 1-&gt;1-&gt;2
+<strong>Output:</strong> 1-&gt;2</p>
 <p><strong>Example 2:</strong><br>
-<strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 3
-<strong>Output:</strong> -1</p>
+<strong>Input:</strong> 1-&gt;1-&gt;2-&gt;3-&gt;3
+<strong>Output:</strong> 1-&gt;2-&gt;3</p>
 <hr>
-<h3 id="分析">分析:</h3>
-<blockquote>
-<p>一个有序数组被循环右移，只可能有以下两种情况：</p>
-<center>
-</blockquote>
-<pre><code>&lt;img style=&quot;border-radius: 0.3125em;
-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);&quot; 
-src=&quot;https://ws3.sinaimg.cn/large/006tKfTcly1g1pgjncrgsj307i0dvwei.jpg&quot;&gt;
-</code></pre>
-</center> 
-<br>
-<blockquote>
-<p>本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
-如果A[left] &lt;= A[mid],那么[left,mid] 一定为单调递增序列。</p>
-</blockquote>
-<pre><code>class Solution {
+<h3 id="思路一迭代">思路一：迭代</h3>
+<pre><code>/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
 public:
-    int search(const vector&lt;int&gt;&amp; nums, int target) {
-        int first = 0, last = nums.size();
-        while (first != last) {
-            const int mid = first  + (last - first) / 2;
-            if (nums[mid] == target)
-                return mid;
-            if (nums[first] &lt;= nums[mid]) {
-                if (nums[first] &lt;= target &amp;&amp; target &lt; nums[mid])
-                    last = mid;
-                else
-                    first = mid + 1;
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head == nullptr) return nullptr;
+        
+        for (ListNode *prev = head, *cur = head-&gt;next; 
+             cur != nullptr; cur = prev-&gt;next) {
+            if (prev-&gt;val == cur-&gt;val) {
+                prev-&gt;next = cur-&gt;next;
+                delete cur;
             } else {
-                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[last-1])
-                    first = mid + 1;
-                else
-                    last = mid;
+                prev = cur;
             }
         }
-        return -1;
+        return head;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路二递归">思路二：递归</h3>
+<pre><code>class Solution {
+public:
+    ListNode *deleteDuplicates(ListNode *head) {
+        if (!head) return head;
+        ListNode dummy(head-&gt;val + 1); // 值只要跟head不同即可
+        dummy.next = head;
+
+        recur(&amp;dummy, head);
+        return dummy.next;
+    }
+private:
+    static void recur(ListNode *prev, ListNode *cur) {
+        if (cur == nullptr) return;
+
+        if (prev-&gt;val == cur-&gt;val) { // 删除head
+            prev-&gt;next = cur-&gt;next;
+            delete cur;
+            recur(prev, prev-&gt;next);
+        } else {
+            recur(prev-&gt;next, cur-&gt;next);
+        }
     }
 };
 </code></pre>
@@ -149,7 +152,7 @@ public:
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/search-in-rotated-sorted-array.html</a></li>
+<li><a href="https://leetcode.com/problems/remove-duplicates-from-sorted-list/submissions/">https://leetcode.com/problems/remove-duplicates-from-sorted-list/submissions/</a></li>
 </ul>
 
             </div>
@@ -159,9 +162,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/find-minimum-in-rotated-sorted-array">
+            <a href="https://ama-non.github.io/post/linked-list-cycle-ii">
               <h3 class="post-title">
-                Find Minimum in Rotated Sorted Array
+                Linked List Cycle II
               </h3>
             </a>
           </div>  
