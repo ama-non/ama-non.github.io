@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Find Minimum in Rotated Sorted Array | ama-non</title>
+<title>Construct Binary Tree from Preorder and Inorder Traversal | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556440901648">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,91 +76,94 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Find Minimum in Rotated Sorted Array
+              Construct Binary Tree from Preorder and Inorder Traversal
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-23 ·
+                · 2019-04-28 ·
               </time>
+              
+                <a href="https://ama-non.github.io/tag/wfktf4LKV" class="post-tags">
+                  # 树
+                </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
                   # LeetCode
                 </a>
               
-                <a href="https://ama-non.github.io/tag/TJwhFDnCF" class="post-tags">
-                  # 数组
-                </a>
-              
             </div>
             
             <div class="post-content">
-              <p>Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.</p>
-<p>(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).</p>
-<p>Find the minimum element.</p>
-<p>You may assume no duplicate exists in the array.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> [3,4,5,1,2]
-<strong>Output:</strong> 1</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> [4,5,6,7,0,1,2]
-<strong>Output:</strong> 0</p>
+              <p>Given preorder and inorder traversal of a tree, construct the binary tree.</p>
+<p><strong>Note：</strong>
+You may assume that duplicates do not exist in the tree.</p>
+<p>For example, given</p>
+<p>preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]</p>
+<p>Return the following binary tree:</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1vmcmr8psj305205u0sq.jpg" alt=""></p>
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p>从左向右扫描，扫描到的第一个逆序的位置，肯定是原始数组中第一个元素，时间复杂度O(n)。
-不过本题依旧可以用二分查找，最关键的是要判断那个“断层”是在左边还是右边。</p>
-<ul>
-<li>若A[mid] &lt; A[right]，则区间[mid,right]一定递增，断层一定在左边</li>
-</ul>
-<ul>
-<li>若A[mid] &gt; A[right]，则区间[left,mid]一定递增，断层一定在右边</li>
-</ul>
-<ul>
-<li>nums[mid] == nums[right]，这种情况不可能发生，因为数组是严格单调递增的，不存在重复元素</li>
-</ul>
+<p>每次取preorder的第一个值mid，将其作为树的根节点
+然后从inroder中找到mid，将其分割成为两部分，左边作为mid的左子树，右边作为mid的右子树<br>
+tree:     8 4 10 3 6 9 11<br>
+Inorder   [3 4 6] 8 [9 10 11]<br>
+pretorder 8 [4 3 6] [10 9 11]</p>
 </blockquote>
-<hr>
-<h3 id="思路一">思路一：</h3>
-<pre><code>public class Solution {
-    public int findMin(int[] nums) {
-       for(int i = 1; i &lt; nums.length; i++){
-           if(nums[i] &lt; nums[i-1]){
-               return nums[i];
-           }
-       }
-       return nums[0];
-    }
-}
-</code></pre>
-<p><em>时间复杂度o(n)</em></p>
-<h3 id="思路二">思路二：</h3>
-<pre><code>class Solution {
+<pre><code>/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
 public:
-    int findMin(vector&lt;int&gt; &amp;num) {
-        int lo = 0, hi = num.size()-1;
-        while (lo &lt; hi) {
-              int mid = ( lo + hi) / 2;
-              if (num[mid] &gt; num[hi]) lo = mid + 1;
-              else hi = mid;
-        }
-        return num[lo];
+    TreeNode* buildTree(vector&lt;int&gt;&amp; preorder, vector&lt;int&gt;&amp; inorder) {
+        return buildTree(begin(inorder), end(inorder), 
+                         begin(preorder), end(preorder));
+    }
+    
+    template&lt;class T&gt;
+        TreeNode* buildTree(T in_first, T in_last, T pre_first, T pre_last) {
+        if (pre_first == pre_last) return nullptr;
+        if (in_first == in_last) return nullptr;
+        
+        const auto val = *(pre_first);
+        TreeNode* root = new TreeNode(val);
+        
+        auto in_root_pos = find(in_first, in_last, val);
+        auto left_size = distance(in_first, in_root_pos);
+        auto pre_left_first = next(pre_first);
+        auto pre_left_last = next(pre_left_first, left_size);
+        
+        root-&gt;left = buildTree(in_first, in_root_pos, 
+                               pre_left_first, pre_left_last);
+        root-&gt;right = buildTree(next(in_root_pos), in_last, 
+                                pre_left_last, pre_last);
+        
+        return root;
     }
 };
 </code></pre>
-<p><em>时间复杂度o(log^n)</em></p>
-<hr>
-<h5 id="参考来源">参考来源：</h5>
-<ul>
-<li><a href="https://www.cnblogs.com/anne-vista/p/4899735.html">https://www.cnblogs.com/anne-vista/p/4899735.html</a></li>
-</ul>
-<ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/find-minimum-in-rotated-sorted-array.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/search/find-minimum-in-rotated-sorted-array.html</a></li>
-</ul>
+<p><em>时间复杂度o(n),空间复杂度o(\logn)</em></p>
 
             </div>
           </article>
         </div>
     
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/construct-binary-tree-from-inorder-and-postorder-traversal">
+              <h3 class="post-title">
+                Construct Binary Tree from Inorder and Postorder Traversal
+              </h3>
+            </a>
+          </div>  
         
 
         
