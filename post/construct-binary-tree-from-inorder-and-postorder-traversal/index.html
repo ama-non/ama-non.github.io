@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Remove Nth Node From End of List | ama-non</title>
+<title>Construct Binary Tree from Inorder and Postorder Traversal | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556440080529">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,15 +76,15 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Remove Nth Node From End of List
+              Construct Binary Tree from Inorder and Postorder Traversal
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-25 ·
+                · 2019-04-28 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/omyGTg22P" class="post-tags">
-                  # 链表
+                <a href="https://ama-non.github.io/tag/wfktf4LKV" class="post-tags">
+                  # 树
                 </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
@@ -94,46 +94,65 @@
             </div>
             
             <div class="post-content">
-              <p>Given a linked list, remove the n-th node from the end of list and return its head.</p>
-<p><strong>Example:</strong></p>
-<p>Given linked list: <strong>1-&gt;2-&gt;3-&gt;4-&gt;5</strong>, and <em>n = 2</em>.</p>
-<p>After removing the second node from the end, the linked list becomes <strong>1-&gt;2-&gt;3-&gt;5</strong>.</p>
-<p><strong>Note:</strong></p>
-<p>Given n will always be valid.</p>
-<p><strong>Follow up:</strong></p>
-<p>Could you do this in one pass?</p>
+              <p>Given inorder and postorder traversal of a tree, construct the binary tree.</p>
+<p><strong>Note：</strong></p>
+<p>You may assume that duplicates do not exist in the tree.</p>
+<p>For example, given</p>
+<p>inorder = [9,3,15,20,7]</p>
+<p>postorder = [9,15,7,20,3]</p>
+<p>Return the following binary tree:</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1v0y0jclkj302s033745.jpg" alt=""></p>
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p>设两个指针p,q，让q先走n步，然后p和q一起走，直到q走到尾节点，删除p-&gt;next即可。</p>
+<p>每次取postorder的最后一个值mid，将其作为树的根节点
+然后从inroder中找到mid，将其分割成为两部分，左边作为mid的左子树，右边作为mid的右子树<br>
+tree:     8 4 10 3 6 9 11<br>
+Inorder   [3 4 6] 8 [9 10 11]<br>
+postorder [3 6 4]   [9 11 10] 8</p>
 </blockquote>
-<pre><code>class Solution {
+<pre><code>/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
 public:
-    ListNode *removeNthFromEnd(ListNode *head, int n) {
-        // ListNode dummy{-1, head}; (此处为C11标准列表初始化)
-        ListNode dummy = ListNode(0);
-        dummy.next = head;
-        ListNode *p = &amp;dummy, *q = &amp;dummy;
-
-        for (int i = 0; i &lt; n; i++)  // q先走n步
-            q = q-&gt;next;
-
-        while(q-&gt;next != nullptr) { // 一起走
-            p = p-&gt;next;
-            q = q-&gt;next;
-        }
-        ListNode *tmp = p-&gt;next;
-        p-&gt;next = p-&gt;next-&gt;next;
-        delete tmp;
-        return dummy.next;
+    TreeNode* buildTree(vector&lt;int&gt;&amp; inorder, vector&lt;int&gt;&amp; postorder) {
+        return buildTree(begin(inorder), end(inorder), begin(postorder), end(postorder));
+    }
+    
+    template&lt;class T&gt;
+        TreeNode* buildTree(T in_first, T in_last, T post_first, T post_last) {
+        if (in_first == in_last) return nullptr;
+        if (post_first == post_last) return nullptr;
+        
+        const auto val = *prev(post_last);
+        TreeNode* root = new TreeNode(val);
+        
+        auto in_root_pos = find(in_first, in_last, val);
+        auto left_size = distance(in_first, in_root_pos);
+        auto post_left_last = next(post_first, left_size);
+        
+        root-&gt;left = buildTree(in_first, in_root_pos, post_first, post_left_last);
+        root-&gt;right = buildTree(next(in_root_pos), in_last, post_left_last, prev(post_last));
+                                
+        return root;
     }
 };
 </code></pre>
-<p><em>时间复杂度o(n)，空间复杂度o(1)</em></p>
+<p><em>递归，时间复杂度o(n),空间复杂度o(\logn)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/remove-nth-node-from-end-of-list.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/remove-nth-node-from-end-of-list.html</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html</a></li>
+</ul>
+<ul>
+<li><a href="https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution">https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution</a></li>
 </ul>
 
             </div>
@@ -143,9 +162,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/delete-node-in-a-linked-list">
+            <a href="https://ama-non.github.io/post/copy-list-with-random-pointer">
               <h3 class="post-title">
-                Delete Node in a Linked List
+                Copy List with Random Pointer
               </h3>
             </a>
           </div>  
