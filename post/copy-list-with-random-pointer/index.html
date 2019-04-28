@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Reverse Linked List | ama-non</title>
+<title>Copy List with Random Pointer | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556438224127">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,11 +76,11 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Reverse Linked List
+              Copy List with Random Pointer
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-25 ·
+                · 2019-04-28 ·
               </time>
               
                 <a href="https://ama-non.github.io/tag/omyGTg22P" class="post-tags">
@@ -94,74 +94,86 @@
             </div>
             
             <div class="post-content">
-              <p>Reverse a singly linked list.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
-<strong>Output:</strong> 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</p>
-<p><strong>Follow up:</strong>
-A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
+              <p>A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.</p>
+<p>Return a <strong>deep copy</strong> of the list.</p>
+<p><strong>Note:</strong>
+You must return the <strong>copy of the given head</strong> as a reference to the cloned list.</p>
 <hr>
-<h3 id="分析">分析：</h3>
-<blockquote>
-<p>用三个指针 pre,cur,next，紧紧相邻，不断前进，每次将cur.next指向pre。</p>
-</blockquote>
+<h3 id="思路一哈希mapjava">思路一：哈希Map(Java)</h3>
+<pre><code>class LinearSpaceApproach {
+
+  public RandomListNode copyRandomList(RandomListNode head) {
+
+    if (head == null) {
+      return null;
+    }
+    
+    Map&lt;RandomListNode, RandomListNode&gt; cloneMap = new HashMap&lt;RandomListNode, RandomListNode&gt;();
+    
+    RandomListNode curr = head;
+    while (curr != null) {
+      cloneMap.put(curr, new RandomListNode(curr.val));
+      curr = curr.next;
+    }
+    
+    curr = head;
+    while (curr != null) {
+
+      cloneMap.get(curr).next = cloneMap.get(curr.next);
+
+      cloneMap.get(curr).random = cloneMap.get(curr.random);
+
+      curr = curr.next;
+    }
+    
+    return cloneMap.get(head);
+  }
+
+}
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(n)</em></p>
 <hr>
-<h3 id="思路一迭代">思路一：迭代</h3>
-<pre><code>/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
+<h3 id="思路二tricky-onec">思路二：Tricky one(C++)</h3>
+<pre><code>class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        ListNode *pre = NULL;
-        ListNode *cur = head;
-        ListNode *next = NULL;
-        while (cur) {
-            next = cur-&gt;next;
-            cur-&gt;next = pre;
-            pre = cur;
-            cur = next;
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        if (head == NULL) return NULL;
+        for (RandomListNode* cur = head; cur != nullptr; ) {
+            RandomListNode* node = new RandomListNode(cur-&gt;val);
+            node-&gt;next = cur-&gt;next;
+            cur-&gt;next = node;
+            cur = node-&gt;next;
         }
-        return pre;
+
+        for (RandomListNode* cur = head; cur != nullptr; ) {
+            if (cur-&gt;random != NULL)
+                cur-&gt;next-&gt;random = cur-&gt;random-&gt;next;
+            else
+                cur-&gt;next-&gt;random = NULL;
+            cur = cur-&gt;next-&gt;next;
+        }
+
+        // 分拆两个单链表
+        RandomListNode dummy(-1);
+        for (RandomListNode* cur = head, *new_cur = &amp;dummy;
+                cur != nullptr; ) {
+            new_cur-&gt;next = cur-&gt;next;
+            new_cur = new_cur-&gt;next;
+            cur-&gt;next = cur-&gt;next-&gt;next;
+            cur = cur-&gt;next;
+        }
+        return dummy.next;
     }
 };
 </code></pre>
-<hr>
-<h3 id="思路二递归">思路二：递归</h3>
-<pre><code>/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* reverseList(ListNode* head) {
-        if (head == NULL || head-&gt;next == NULL) {
-            return head;
-        }
-        ListNode* reversedListHead = reverseList(head-&gt;next);
-        head-&gt;next-&gt;next = head;
-        head-&gt;next = NULL;
-        return reversedListHead;
-    }
-};
-</code></pre>
-<p><em>时间复杂度o(n)，空间复杂度o(n)</em></p>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list.html</a></li>
+<li><a href="https://www.youtube.com/watch?v=OvpKeraoxW0">https://www.youtube.com/watch?v=OvpKeraoxW0</a></li>
 </ul>
 <ul>
-<li><a href="https://www.youtube.com/watch?v=O0By4Zq0OFc">https://www.youtube.com/watch?v=O0By4Zq0OFc</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/copy-list-with-random-pointer.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/copy-list-with-random-pointer.html</a></li>
 </ul>
 
             </div>
@@ -171,9 +183,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/regular-expression-matching">
+            <a href="https://ama-non.github.io/post/remove-duplicates-from-sorted-list">
               <h3 class="post-title">
-                Regular Expression Matching
+                Remove Duplicates from Sorted List
               </h3>
             </a>
           </div>  
