@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>二叉搜索树的后序遍历序列 | ama-non</title>
+<title>二叉树的下一个节点 | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556544905447">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,7 +76,7 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              二叉搜索树的后序遍历序列
+              二叉树的下一个节点
             </h2>
             <div class="post-info">
               <time class="post-time">
@@ -94,93 +94,78 @@
             </div>
             
             <div class="post-content">
-              <p>输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果，如果是则输出Yes，否则输出No。假设输入的数组的任意两个数字都互不相同。</p>
-<p><strong>Example：</strong>
-序列[5，7，6，9，11，10，8]是下图二叉搜索树的后序遍历结果。</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1wnkglhepj304d04kjrj.jpg" alt=""></p>
+              <p>给定一个二叉树和其中的一个节点，请找出中序遍历顺序的下一个节点并且返回。注意，树中的节点不仅包含左右子节点，同时包含指向父节点的指针。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1wo5qa1isj306q060aan.jpg" alt=""></p>
+<p><strong>一颗有9个节点的二叉树。树中从父节点指向子节点的指针用实线表示，从子节点指向父节点的指针用虚线表示。中序遍历序列为[d,b,h,e,i,a,f,c,g]</strong></p>
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p><strong>性质：</strong></p>
 <ul>
-<li><strong>二叉排序树的性质：</strong> 左子树上所有节点的值均小于它的根节点；右子树上所有节点的值均大于它的根节点。</li>
+<li>如果节点有右子节点，则右子节点的最左节点是该节点的下一个节点。例如，寻找b的下一个节点的过程（b有右子节点e，e的左子节点是h，且h是e的最左节点，h是b的下一个节点）</li>
 </ul>
 <ul>
-<li><strong>二叉排序树后序遍历的性质：</strong> 序列最后一个数字是根节点，序列剩余部分分成两部分，前一部分是左子树，后一&gt;部分是右子树。</li>
+<li>如果节点无右子节点，但该节点是父节点的左子节点，则父节点是该节点的下一个节点。例如，寻找d的下一个节点的过程（d无右子节点，d是父节点b的左子节点，则b是de的下一个节点）</li>
+</ul>
+<ul>
+<li>如果节点无右子节点，且该节点是父节点的右子节点，则沿着父节点的指针向上遍历。例如，寻找i的下一个节点的过程（i的父节点e，e是其父节点b的右子节点，节点b是其父节点a的左子节点，节点a是节点i的下一个节点）</li>
 </ul>
 </blockquote>
-<p><strong>举例：</strong></p>
-<ul>
-<li>判断序列[5,7,6,9,11,10,8]是否是二叉排序树的后序遍历。其中，8是根节点，[5,7,6]比8小是左子树，[9,11,10]比8大是右子树。</li>
-</ul>
-<ul>
-<li>判断[5,7,6]是否是二叉排序树，其中6是根节点，5比6小是左子树，7比6大是右子树。</li>
-</ul>
-<ul>
-<li>判断[9,11,10]是否是二叉排序树，其中10是根节点，9比10小是左子树，11比10大是右子树。</li>
-</ul>
-<p><strong>测试用例：</strong></p>
-<ul>
-<li>空指针</li>
-</ul>
-<ul>
-<li>后序遍历对应一颗BST二叉树</li>
-</ul>
-<ul>
-<li>一个结点的BST二叉树</li>
-</ul>
-<ul>
-<li>无左子树的BST二叉树</li>
-</ul>
-<ul>
-<li>无右子树的BST二叉树</li>
-</ul>
-<ul>
-<li>完全二叉树</li>
-</ul>
-<ul>
-<li>后序遍历不对应一颗BST二叉树</li>
-</ul>
-<pre><code>class Solution {
-public:
-    bool VerifySquenceOfBST(vector&lt;int&gt; sequence) {
-        return bst(sequence, 0, sequence.size() - 1);
+<pre><code>/*
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+    TreeLinkNode(int x) :val(x), left(NULL), right(NULL), next(NULL) {
+
     }
-private:
-    bool bst(vector&lt;int&gt; seq, int begin, int end){
-        // 边界条件
-        if(seq.empty() || begin &gt; end)
-            return false;
- 
-        // 划分左右子树，并判断左右子树和根节点的关系
-        int i = begin;
-        for(; i &lt; end; ++i)
-            if(seq[i] &gt; seq[end])
-                break;
- 
-        int j = i;
-        for(; j &lt; end; ++j)
-            if(seq[j] &lt; seq[end])
-                return false;
- 
-        // 判断左子树是不是二叉搜索树
-        bool left = true;
-        if(i &gt; begin)
-            left = bst(seq, begin, i - 1);
- 
-        // 判断右子树是不是二叉搜索树
-        bool right = true;
-        if(i &lt; end - 1)
-            right = bst(seq, i , end - 1);
- 
-        return left &amp;&amp; right;
+};
+*/
+class Solution {
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        // 特殊输入
+        if(pNode == nullptr)
+            return nullptr;
+
+        /* 寻找结果 */
+        // 如果节点有右子节点，则右子节点的最左节点是该节点的下一个节点
+        // 如果节点无右子节点，但该节点是其父节点的左子节点，则父节点是该节点的下一个节点
+        // 如果节点无右子节点，且该节点是其父节点的右子节点，则沿着父节点向上遍历，满足XXX的父节点是其该节点的下一个节点
+        TreeLinkNode * res = nullptr;
+        if(pNode-&gt;right != nullptr)
+        {
+            TreeLinkNode* node_right = pNode-&gt;right;
+            while(node_right -&gt;left != nullptr)
+            {
+                node_right = node_right-&gt;left;
+            }
+            res = node_right;
+        }
+
+        else if(pNode-&gt;next != nullptr)
+        {
+            // 当前节点和当前节点的父节点
+            TreeLinkNode * current = pNode;
+            TreeLinkNode * parent = pNode-&gt;next;
+
+            while(parent!=nullptr &amp;&amp; current == parent-&gt;right)
+            {
+                current = parent;
+                parent = parent -&gt;next;
+            }
+
+            res = parent;
+        }
+        return res;
     }
 };
 </code></pre>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="http://www.cnblogs.com/wanglei5205/p/8684408.html">http://www.cnblogs.com/wanglei5205/p/8684408.html</a></li>
+<li><a href="http://www.cnblogs.com/wanglei5205/p/9068827.html">http://www.cnblogs.com/wanglei5205/p/9068827.html</a></li>
 </ul>
 
             </div>
@@ -190,9 +175,9 @@ private:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/path-sum-ii">
+            <a href="https://ama-non.github.io/post/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie">
               <h3 class="post-title">
-                Path Sum II
+                二叉搜索树的后序遍历序列
               </h3>
             </a>
           </div>  
