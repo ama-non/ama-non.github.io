@@ -1,0 +1,252 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Implement Queue using Stacks | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556590701402">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1556590701402" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ama-non" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Implement Queue using Stacks
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-30 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/vEtHgw_CF" class="post-tags">
+                  # 栈
+                </a>
+              
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Implement the following operations of a queue using stacks.</p>
+<ul>
+<li>push(x) -- Push element x to the back of queue.</li>
+</ul>
+<ul>
+<li>pop() -- Removes the element from in front of queue.</li>
+</ul>
+<ul>
+<li>peek() -- Get the front element.</li>
+</ul>
+<ul>
+<li>empty() -- Return whether the queue is empty.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>MyQueue queue = new MyQueue();</p>
+<p>queue.push(1);
+queue.push(2);<br>
+queue.peek();  // returns 1
+queue.pop();   // returns 1
+queue.empty(); // returns false</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>You must use only standard operations of a stack -- which means only push to top, peek/pop from top, size, and is empty operations are valid.</li>
+</ul>
+<ul>
+<li>Depending on your language, stack may not be supported natively. You may simulate a stack by using a list or deque (double-ended queue), as long as you use only + standard operations of a stack.</li>
+</ul>
+<ul>
+<li>You may assume that all operations are valid (for example, no pop or peek operations will be called on an empty queue)</li>
+</ul>
+<hr>
+<h3 id="分析">分析：</h3>
+<blockquote>
+<p>The idea behind using two stacks is simple. Whenever you enqueue an element, it goes in the <strong>right</strong> stack.
+When you need to dequeue an element, you reverse the right stack and place it in the <strong>left</strong> stack so that you can retrieve the elements using FIFO order.<br>
+<strong>empty():</strong>
+To check if the queue is empty, simply check that both the left and right stack are empty. This means that there &gt;are no elements left to dequeue and no new elements have been enqueued.<br>
+<strong>peek():</strong>
+If the left stack is not empty, the element on top of this stack is at the front of the queue.
+If the left stack is empty, the right stack will be reversed and placed in the left stack.<br>
+<strong>enqueue():</strong>
+Recall that the right stack is used to enqueue elements.<br>
+<strong>dequeue():</strong>
+Remove the top of the left stack.</p>
+</blockquote>
+<pre><code>class MyQueue {
+public:
+    /** Initialize your data structure here. */
+    stack&lt;int&gt; left, right;
+    
+    /** Push element x to the back of queue. */
+    void push(int x) {
+        right.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        peek();
+        int first = left.top();
+        left.pop();
+            
+        return first;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+        if (left.empty()) {
+            while (!right.empty()) {
+                left.push(right.top());
+                right.pop();
+            }
+        }
+        
+        return left.top();
+    }
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return left.empty() &amp;&amp; right.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj-&gt;push(x);
+ * int param_2 = obj-&gt;pop();
+ * int param_3 = obj-&gt;peek();
+ * bool param_4 = obj-&gt;empty();
+ */
+</code></pre>
+<p><em>时间复杂度o(1),空间复杂度o(n)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://store.raywenderlich.com/products/data-structures-and-algorithms-in-swift">Matthijs Hollemans. “Data Structures &amp; Algorithms in Swift。”  </a></li>
+</ul>
+<ul>
+<li><a href="https://leetcode.com/problems/implement-queue-using-stacks/discuss/64206/Short-O(1)-amortized-C%2B%2B-Java-Ruby">https://leetcode.com/problems/implement-queue-using-stacks/discuss/64206/Short-O(1)-amortized-C%2B%2B-Java-Ruby</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/er-cha-shu-de-xia-yi-ge-jie-dian">
+              <h3 class="post-title">
+                二叉树的下一个节点
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
