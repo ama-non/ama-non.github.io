@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Construct Binary Tree from Inorder and Postorder Traversal | ama-non</title>
+<title>Min Stack | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556594079736">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,15 +76,15 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Construct Binary Tree from Inorder and Postorder Traversal
+              Min Stack
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-28 ·
+                · 2019-04-30 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/wfktf4LKV" class="post-tags">
-                  # 树
+                <a href="https://ama-non.github.io/tag/vEtHgw_CF" class="post-tags">
+                  # 栈
                 </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
@@ -94,70 +94,82 @@
             </div>
             
             <div class="post-content">
-              <p>Given inorder and postorder traversal of a tree, construct the binary tree.</p>
-<p><strong>Note：</strong></p>
-<p>You may assume that duplicates do not exist in the tree.</p>
-<p>For example, given</p>
-<p>inorder = [9,3,15,20,7]</p>
-<p>postorder = [9,15,7,20,3]</p>
-<p>Return the following binary tree:</p>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="https://ws1.sinaimg.cn/large/006tNc79ly1g1v0y0jclkj302s033745.jpg">
-</center> 
-<br>
+              <p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
+<ul>
+<li>push(x) -- Push element x onto stack.</li>
+</ul>
+<ul>
+<li>pop() -- Removes the element on top of the stack.</li>
+</ul>
+<ul>
+<li>top() -- Get the top element.</li>
+</ul>
+<ul>
+<li>getMin() -- Retrieve the minimum element in the stack.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --&gt; Returns -3.
+minStack.pop();
+minStack.top();      --&gt; Returns 0.
+minStack.getMin();   --&gt; Returns -2.</p>
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p>每次取postorder的最后一个值mid，将其作为树的根节点
-然后从inroder中找到mid，将其分割成为两部分，左边作为mid的左子树，右边作为mid的右子树<br>
-tree:     8 4 10 3 6 9 11<br>
-Inorder   [3 4 6] 8 [9 10 11]<br>
-postorder [3 6 4]   [9 11 10] 8</p>
-</blockquote>
-<pre><code>/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
-class Solution {
-public:
-    TreeNode* buildTree(vector&lt;int&gt;&amp; inorder, vector&lt;int&gt;&amp; postorder) {
-        return buildTree(begin(inorder), end(inorder), begin(postorder), end(postorder));
-    }
-    
-    template&lt;class T&gt;
-        TreeNode* buildTree(T in_first, T in_last, T post_first, T post_last) {
-        if (in_first == in_last) return nullptr;
-        if (post_first == post_last) return nullptr;
-        
-        const auto val = *prev(post_last);
-        TreeNode* root = new TreeNode(val);
-        
-        auto in_root_pos = find(in_first, in_last, val);
-        auto left_size = distance(in_first, in_root_pos);
-        auto post_left_last = next(post_first, left_size);
-        
-        root-&gt;left = buildTree(in_first, in_root_pos, post_first, post_left_last);
-        root-&gt;right = buildTree(next(in_root_pos), in_last, post_left_last, prev(post_last));
-                                
-        return root;
-    }
-};
-</code></pre>
-<p><em>递归，时间复杂度o(n),空间复杂度o(\logn)</em></p>
-<hr>
-<h5 id="参考来源">参考来源：</h5>
+<p>用两个栈，一个是真实的栈，另一个作为辅助栈，辅助栈每次 push 时，会把新元素跟当前栈顶元素进行比较，存入二&gt;者中较小的那个。</p>
+<p>举个例子，对于序列 18, 19, 21, 15, 17, 两个栈依次push进去的元素是这样的：</p>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html</a></li>
+<li>真实栈，18, 19, 21, 15, 17</li>
 </ul>
 <ul>
-<li><a href="https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution">https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution</a></li>
+<li>辅助栈，18, 18, 18, 15, 15</li>
+</ul>
+<p>具体过程是这样的，对于 18, 辅助栈是空的，直接push进去，当遇到19时，此时栈顶元素是18，二者中18较小，就把18插入，此时辅助栈中就有了两个18，当遇到21时，以此类推，还是插入18，遇到15时，栈顶元素是18，15较小，就把15压入，此时辅助栈中有3个18，1个15，当遇到17时，栈顶元素是15，二者中15是较小值，于是插入15，结束。</p>
+</blockquote>
+<pre><code>class MinStack {
+public:
+    /** initialize your data structure here. */
+    stack&lt;int&gt; s1, s2;
+    
+    void push(int x) {
+        s1.push(x);
+        if (s2.empty() || x &lt; getMin()) {
+            s2.push(x);
+        } else {
+            s2.push(getMin());
+        }
+    }
+    
+    void pop() {
+        s1.pop();
+        s2.pop();
+    }
+    
+    int top() {
+        return s1.top();
+    }
+    
+    int getMin() {
+        return s2.top();
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj-&gt;push(x);
+ * obj-&gt;pop();
+ * int param_3 = obj-&gt;top();
+ * int param_4 = obj-&gt;getMin();
+ */
+</code></pre>
+<hr>
+<h3 id="参考来源">参考来源：</h3>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/stack-and-queue/stack/min-stack.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/stack-and-queue/stack/min-stack.html</a></li>
 </ul>
 
             </div>
@@ -167,9 +179,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/copy-list-with-random-pointer">
+            <a href="https://ama-non.github.io/post/implement-stack-using-queues">
               <h3 class="post-title">
-                Copy List with Random Pointer
+                Implement Stack using Queues
               </h3>
             </a>
           </div>  
