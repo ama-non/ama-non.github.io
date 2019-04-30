@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Construct Binary Tree from Inorder and Postorder Traversal | ama-non</title>
+<title>Implement Stack using Queues | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1556592607782">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,15 +76,15 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Construct Binary Tree from Inorder and Postorder Traversal
+              Implement Stack using Queues
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-28 ·
+                · 2019-04-30 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/wfktf4LKV" class="post-tags">
-                  # 树
+                <a href="https://ama-non.github.io/tag/vEtHgw_CF" class="post-tags">
+                  # 栈
                 </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
@@ -94,70 +94,84 @@
             </div>
             
             <div class="post-content">
-              <p>Given inorder and postorder traversal of a tree, construct the binary tree.</p>
-<p><strong>Note：</strong></p>
-<p>You may assume that duplicates do not exist in the tree.</p>
-<p>For example, given</p>
-<p>inorder = [9,3,15,20,7]</p>
-<p>postorder = [9,15,7,20,3]</p>
-<p>Return the following binary tree:</p>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="https://ws1.sinaimg.cn/large/006tNc79ly1g1v0y0jclkj302s033745.jpg">
-</center> 
-<br>
+              <p>Implement the following operations of a stack using queues.</p>
+<ul>
+<li>push(x) -- Push element x onto stack.</li>
+</ul>
+<ul>
+<li>pop() -- Removes the element on top of the stack.</li>
+</ul>
+<ul>
+<li>top() -- Get the top element.</li>
+</ul>
+<ul>
+<li>empty() -- Return whether the stack is empty.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>MyStack stack = new MyStack();</p>
+<p>stack.push(1);
+stack.push(2);<br>
+stack.top();   // returns 2
+stack.pop();   // returns 2
+stack.empty(); // returns false</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>You must use only standard operations of a queue -- which means only push to back, peek/pop from front, size, and is empty operations are valid.</li>
+</ul>
+<ul>
+<li>Depending on your language, queue may not be supported natively. You may simulate a queue by using a list or deque (double-ended queue), as long as you use only standard operations of a queue.</li>
+</ul>
+<ul>
+<li>You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).</li>
+</ul>
 <hr>
-<h3 id="分析">分析：</h3>
-<blockquote>
-<p>每次取postorder的最后一个值mid，将其作为树的根节点
-然后从inroder中找到mid，将其分割成为两部分，左边作为mid的左子树，右边作为mid的右子树<br>
-tree:     8 4 10 3 6 9 11<br>
-Inorder   [3 4 6] 8 [9 10 11]<br>
-postorder [3 6 4]   [9 11 10] 8</p>
-</blockquote>
-<pre><code>/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
-class Solution {
+<pre><code>class MyStack {
 public:
-    TreeNode* buildTree(vector&lt;int&gt;&amp; inorder, vector&lt;int&gt;&amp; postorder) {
-        return buildTree(begin(inorder), end(inorder), begin(postorder), end(postorder));
+    /** Initialize your data structure here. */
+    queue&lt;int&gt; q;
+    
+    /** Push element x onto stack. */
+    void push(int x) {
+        q.push(x);
+        for (int i = 1; i &lt; q.size(); i++) {
+            q.push(q.front());
+            q.pop();
+        }
+        
     }
     
-    template&lt;class T&gt;
-        TreeNode* buildTree(T in_first, T in_last, T post_first, T post_last) {
-        if (in_first == in_last) return nullptr;
-        if (post_first == post_last) return nullptr;
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int top = q.front();
+        q.pop();
         
-        const auto val = *prev(post_last);
-        TreeNode* root = new TreeNode(val);
-        
-        auto in_root_pos = find(in_first, in_last, val);
-        auto left_size = distance(in_first, in_root_pos);
-        auto post_left_last = next(post_first, left_size);
-        
-        root-&gt;left = buildTree(in_first, in_root_pos, post_first, post_left_last);
-        root-&gt;right = buildTree(next(in_root_pos), in_last, post_left_last, prev(post_last));
-                                
-        return root;
+        return top;
+    }
+    
+    /** Get the top element. */
+    int top() {
+        return q.front();
+    }
+    
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return q.empty();
     }
 };
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj-&gt;push(x);
+ * int param_2 = obj-&gt;pop();
+ * int param_3 = obj-&gt;top();
+ * bool param_4 = obj-&gt;empty();
+ */
 </code></pre>
-<p><em>递归，时间复杂度o(n),空间复杂度o(\logn)</em></p>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/binary-tree/construction/construct-binary-tree-from-inorder-and-postorder-traversal.html</a></li>
-</ul>
-<ul>
-<li><a href="https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution">https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/34911/My-C%2B%2B-Solution</a></li>
+<li><a href="https://leetcode.com/problems/implement-stack-using-queues/discuss/62516/Concise-1-Queue-Java-C%2B%2B-Python">https://leetcode.com/problems/implement-stack-using-queues/discuss/62516/Concise-1-Queue-Java-C%2B%2B-Python</a></li>
 </ul>
 
             </div>
@@ -167,9 +181,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/copy-list-with-random-pointer">
+            <a href="https://ama-non.github.io/post/implement-queue-using-stacks">
               <h3 class="post-title">
-                Copy List with Random Pointer
+                Implement Queue using Stacks
               </h3>
             </a>
           </div>  
