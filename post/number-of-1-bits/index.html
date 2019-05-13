@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Delete Node in a Linked List | ama-non</title>
+<title>Number of 1 Bits | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557737375071">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,15 +76,15 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Delete Node in a Linked List
+              Number of 1 Bits
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-25 ·
+                · 2019-05-13 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/omyGTg22P" class="post-tags">
-                  # 链表
+                <a href="https://ama-non.github.io/tag/yt5bjLlYg" class="post-tags">
+                  # 位
                 </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
@@ -94,42 +94,67 @@
             </div>
             
             <div class="post-content">
-              <p>Write a function to delete a node (except the tail) in a singly linked list, given only access to that node.</p>
-<p>Given linked list -- head = [4,5,1,9], which looks like following:
-4 -&gt; 5 -&gt; 1 -&gt; 9</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> head = [4,5,1,9], node = 5
-<strong>Output:</strong> [4,1,9]<br>
-<strong>Explanation:</strong> You are given the second node with value 5, the linked list should become 4 -&gt; 1 -&gt; 9 after calling your function.</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> head = [4,5,1,9], node = 1
-<strong>Output:</strong> [4,5,9]<br>
-<strong>Explanation:</strong> You are given the third node with value 1, the linked list should become 4 -&gt; 5 -&gt; 9 after calling your function.</p>
+              <p>Write a function that takes an unsigned integer and return the number of '1' bits it has (also known as the Hamming weight).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> 00000000000000000000000000001011<br>
+<strong>Output:</strong> 3<br>
+<strong>Explanation:</strong> The input binary string 00000000000000000000000000001011 has a total of three '1' bits.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> 00000000000000000000000010000000<br>
+<strong>Output:</strong> 1<br>
+<strong>Explanation:</strong> The input binary string 00000000000000000000000010000000 has a total of one '1' bit.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> 11111111111111111111111111111101<br>
+<strong>Output:</strong> 31<br>
+<strong>Explanation:</strong> The input binary string 11111111111111111111111111111101 has a total of thirty one '1' bits.</p>
 <p><strong>Note:</strong></p>
 <ul>
-<li>The linked list will have at least two elements.</li>
+<li>Note that in some languages such as Java, there is no unsigned integer type. In this case, the input will be given as signed integer type and should not affect your implementation, as the internal binary representation of the integer is the same whether it is signed or unsigned.</li>
 </ul>
-<ul>
-<li>All of the nodes' values will be unique.</li>
-</ul>
-<ul>
-<li>The given node will not be the tail and it will always be a valid node of the linked list.</li>
-</ul>
-<ul>
-<li>Do not return anything from your function.</li>
-</ul>
+<p><strong>Follow up:</strong><br>
+If this function is called many times, how would you optimize it?</p>
 <hr>
-<p><br>注意释放删除节点</p>
+<h3 id="思路一">思路一：</h3>
+<blockquote>
+<p>最直接的方法，做32次右移，统计出1的个数。</p>
+</blockquote>
 <pre><code>class Solution {
 public:
-    void deleteNode(ListNode* node) {
-       auto next = node-&gt;next;
-       *node = *next;
-       delete next;
+    int hammingWeight(uint32_t n) {
+        int bits = 0;
+        uint32_t mask = 1;
+        for (int i = 0; i &lt; 32; i++) {
+            if (n &amp; mask) 
+                bits++;
+            mask &lt;&lt;= 1;
+        }
+        return bits;
     }
 };
 </code></pre>
 <p><em>时间复杂度o(1),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路二">思路二：</h3>
+<pre><code>int hammingWeight(uint32_t n) {
+    int count = 0;
+    
+    while (n) {
+        n &amp;= (n - 1);
+        count++;
+    }
+    
+    return count;
+}
+</code></pre>
+<p><em>时间复杂度o(1),空间复杂度o(1)</em></p>
+<blockquote>
+<p>n &amp; (n - 1) drops the lowest set bit. It's a neat little bit trick.</p>
+<p>Let's use n = 00101100 as an example. This binary representation has three 1s.</p>
+<p>If n = 00101100, then n - 1 = 00101011, so n &amp; (n - 1) = 00101100 &amp; 00101011 = 00101000. Count = 1.</p>
+<p>If n = 00101000, then n - 1 = 00100111, so n &amp; (n - 1) = 00101000 &amp; 00100111 = 00100000. Count = 2.</p>
+<p>If n = 00100000, then n - 1 = 00011111, so n &amp; (n - 1) = 00100000 &amp; 00011111 = 00000000. Count = 3.</p>
+<p>n is now zero, so the while loop ends, and the final count (the numbers of set bits) is returned.</p>
+</blockquote>
 
             </div>
           </article>
@@ -138,9 +163,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/reverse-linked-list">
+            <a href="https://ama-non.github.io/post/zhan-de-ya-ru-dan-chu-xu-lie">
               <h3 class="post-title">
-                Reverse Linked List
+                栈的压入、弹出序列
               </h3>
             </a>
           </div>  
