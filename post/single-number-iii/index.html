@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>栈的压入、弹出序列 | ama-non</title>
+<title>Single Number III | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557751528028">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,74 +76,69 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              栈的压入、弹出序列
+              Single Number III
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-30 ·
+                · 2019-05-13 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/vEtHgw_CF" class="post-tags">
-                  # 栈
+                <a href="https://ama-non.github.io/tag/yt5bjLlYg" class="post-tags">
+                  # 位
                 </a>
               
-                <a href="https://ama-non.github.io/tag/1Z66CE8Mi" class="post-tags">
-                  # 剑指offer
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
                 </a>
               
             </div>
             
             <div class="post-content">
-              <p>输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）</p>
+              <p>Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.</p>
+<p><strong>Example:</strong></p>
+<p><strong>Input:</strong>  [1,2,1,3,2,5]<br>
+<strong>Output:</strong> [3,5]</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>The order of the result is not important. So in the above example, [5, 3] is also correct.</li>
+</ul>
+<ul>
+<li>Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?</li>
+</ul>
 <hr>
 <h3 id="分析">分析：</h3>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="https://images2015.cnblogs.com/blog/381412/201509/381412-20150902231008278-567274054.jpg">
-</center> 
-<br>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="https://images2015.cnblogs.com/blog/381412/201509/381412-20150902231038169-1559979167.jpg">
-</center> 
-<br>
 <blockquote>
-<p>通过分析以上序列，可以得出：</p>
-<ul>
-<li>如果下一个弹出的数字刚好是栈顶数字，那么直接弹出。</li>
-</ul>
-<ul>
-<li>如果下一个弹出的数字不在栈顶，我们把压栈序列中还没有入栈的数字压入辅助栈，直到把下一个需要弹出的数字压入栈顶为止。</li>
-</ul>
-<ul>
-<li>如果所有的数字都压入栈了仍然没有找到下一个弹出的数字，那么该序列不可能是一个弹出序列。</li>
-</ul>
+<p>本题是有两个未知数，是 &quot;Single Number&quot; 这道题的扩展，直接做异或肯定是不行的。有没有办法把两个未知数分开，使得可以应用Single Number 的解法呢？
+设x, y是那两个未知数，那么如果对这个数组做异或的话，结果实质上等于x ^ y，因为其他数都出现了两次，被抵消了。
+但是仅仅是通过最后异或出来的值，是没办法区分出x和y的，但是足以帮助我们把x和y划分到不停地子数组中去。对于x和y，由于二者不相等，那么二者至少存在一位不相同。</p>
+<center>
+  <img style="border-radius: 0.3125em;
+  box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://ws1.sinaimg.cn/large/006tNc79ly1g21brkonyaj306503ja9z.jpg">
+</center> 
+<br>
+当找到这个k以后，就可以按照第k位是否等于1，将nums数组划分为两个子数组，然后把Single Number的算法直接应用到两个子数组上，就可以求出x和y了。
 </blockquote>
-<pre><code>class Solution {
-public:
-    bool IsPopOrder(vector&lt;int&gt; pushV,vector&lt;int&gt; popV) {
-        if(pushV.size() == 0) return false;
-        vector&lt;int&gt; stack;
-        for(int i = 0,j = 0 ;i &lt; pushV.size();){
-            stack.push_back(pushV[i++]);
-            while(j &lt; popV.size() &amp;&amp; stack.back() == popV[j]){
-                stack.pop_back();
-                j++;
-            }      
-        }
-        return stack.empty();
+<pre><code>vector&lt;int&gt; singleNumber(vector&lt;int&gt;&amp; nums) {
+    int aXorb = 0;  // the result of a xor b;
+    for (auto item : nums) aXorb ^= item;
+    int lastBit = (aXorb &amp; (aXorb - 1)) ^ aXorb;  // the last bit that a diffs b
+    int intA = 0, intB = 0;
+    for (auto item : nums) {
+        // based on the last bit, group the items into groupA(include a) and groupB
+        if (item &amp; lastBit) intA = intA ^ item;
+        else intB = intB ^ item;
     }
-};
+    return vector&lt;int&gt;{intA, intB};   
+}
 </code></pre>
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://www.nowcoder.com/questionTerminal/d77d11405cc7470d82554cb392585106">https://www.nowcoder.com/questionTerminal/d77d11405cc7470d82554cb392585106</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html</a></li>
 </ul>
 <ul>
-<li><a href="https://www.cnblogs.com/edisonchou/p/4779755.html">https://www.cnblogs.com/edisonchou/p/4779755.html</a></li>
+<li><a href="https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation">https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation</a></li>
 </ul>
 
             </div>
@@ -153,9 +148,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/min-stack">
+            <a href="https://ama-non.github.io/post/single-number-ii">
               <h3 class="post-title">
-                Min Stack
+                Single Number II
               </h3>
             </a>
           </div>  

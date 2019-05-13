@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Single Number | ama-non</title>
+<title>Single Number II | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557751528028">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,7 +76,7 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Single Number
+              Single Number II
             </h2>
             <div class="post-info">
               <time class="post-time">
@@ -94,39 +94,63 @@
             </div>
             
             <div class="post-content">
-              <p>Given a non-empty array of integers, every element appears twice except for one. Find that single one.</p>
+              <p>Given a <strong>non-empty</strong> array of integers, every element appears three times except for one, which appears exactly once. Find that single one.</p>
 <p><strong>Note:</strong></p>
 <p>Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
 <p><strong>Example 1:</strong></p>
-<p><strong>Input:</strong> [2,2,1]<br>
-<strong>Output:</strong> 1</p>
+<p><strong>Input:</strong> [2,2,3,2]<br>
+<strong>Output:</strong> 3</p>
 <p><strong>Example 2:</strong></p>
-<p><strong>Input:</strong> [4,1,2,1,2]<br>
-<strong>Output:</strong> 4</p>
+<p><strong>Input:</strong> [0,1,0,1,0,1,99]<br>
+<strong>Output:</strong> 99</p>
 <hr>
-<p>分析：</p>
+<h3 id="分析">分析：</h3>
 <blockquote>
-<p>异或，不仅能处理两次的情况，只要出现偶数次，都可以清零</p>
+<p>本题和上一题 Single Number，考察的是位运算。</p>
 <ul>
-<li>If we take XOR of zero and some bit, it will return that bit</li>
-<li>a ⊕ 0 = a</li>
+<li>方法1：创建一个长度为sizeof(int)的数组count[sizeof(int)]，count[i]表示在在i位出现的1的次数。如果count[i]是3的整数倍，则忽略；否则就把该位取出来组成答案。</li>
 </ul>
 <ul>
-<li>If we take XOR of two same bits, it will return 0</li>
-<li>a ⊕ a = 0</li>
-</ul>
-<ul>
-<li>a ⊕ b ⊕ a = (a ⊕ a) ⊕ b = 0 ⊕ b = b</li>
+<li>方法2：<strong>用one记录到当前处理的元素为止，二进制1出现“1次”（mod 3 之后的 1）的有哪些二进制位；用two记录到当前计算的变量为止，二进制1出现“2次”（mod 3 之后的 2）的有哪些二进制位。当one和two中的某一位同时为1时表示该二进制位上1出现了3次，此时需要清零。即用二进制模拟三进制运算。最终one记录的是最终结果。</strong>
+假设现在有一个数字1，那么我们更新one的方法就是‘亦或’这个1，则one就变成了1，而two的更新方法是用上一个状态下的one去‘与’上数字1，然后‘或’上这个结果，这样假如之前one是1，那么此时two也会变成1，这make sense，因为说明是当前位遇到两个1了；反之如果之前one是0，那么现在two也就是0。注意更新的顺序是先更新two，再更新one，不理解的话只要带个只有一个数字1的输入数组看一下就不难理解了。然后我们更新three，如果此时one和two都是1了，那么由于我们先更新的two，再更新的one，two为1，说明此时至少有两个数字1了，而此时one为1，说明了此时已经有了三个数字1，这块要仔细想清楚，因为one是要‘亦或’一个1的，值能为1，说明之前one为0，实际情况是，当第二个1来的时候，two先更新为1，此时one再更新为0，下面three就是0了，那么‘与’上three的相反数1不会改变one和two的值；那么当第三个1来的时候，two还是1，此时one就更新为1了，那么three就更新为1了，此时就要清空one和two了，让它们‘与’上three的相反数0即可，最终结果将会保存在one中，</li>
 </ul>
 </blockquote>
+<h3 id="方法一">方法一：</h3>
 <pre><code>class Solution {
 public:
     int singleNumber(vector&lt;int&gt;&amp; nums) {
-        int x = 0;
-        for (int i : nums) {
-            x ^= i;
+        const int W = sizeof(int) * 8; // 一个整数的bit数，即整数字长
+        int count[W];  // count[i]表示在在i位出现的1的次数
+        fill_n(&amp;count[0], W, 0);
+        for (int i = 0; i &lt; nums.size(); i++) {
+            for (int j = 0; j &lt; W; j++) {
+                count[j] += (nums[i] &gt;&gt; j) &amp; 1;
+                count[j] %= 3;
+            }
         }
-        return x;
+        int result = 0;
+        for (int i = 0; i &lt; W; i++) {
+            result += (count[i] &lt;&lt; i);
+        }
+        return result;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<h3 id="方法2">方法2：</h3>
+<pre><code>class Solution {
+public:
+    int singleNumber(vector&lt;int&gt;&amp; nums) {
+        int one = 0, two = 0, three = 0;
+        for (int i : nums) {
+            two |= (one &amp; i);
+            one ^= i;
+            three = ~(one &amp; two);
+            one &amp;= three;
+            two &amp;= three;
+        }
+
+        return one;
     }
 };
 </code></pre>
@@ -134,7 +158,10 @@ public:
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number.html</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-ii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-ii.html</a></li>
+</ul>
+<ul>
+<li><a href="https://www.cnblogs.com/grandyang/p/4263927.html">https://www.cnblogs.com/grandyang/p/4263927.html</a></li>
 </ul>
 
             </div>
@@ -144,9 +171,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/number-of-1-bits">
+            <a href="https://ama-non.github.io/post/single-number">
               <h3 class="post-title">
-                Number of 1 Bits
+                Single Number
               </h3>
             </a>
           </div>  
