@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Linked List Cycle II | ama-non</title>
+<title>Single Number | ama-non</title>
 <link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557737987991">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
@@ -76,15 +76,15 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Linked List Cycle II
+              Single Number
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-04-25 ·
+                · 2019-05-13 ·
               </time>
               
-                <a href="https://ama-non.github.io/tag/omyGTg22P" class="post-tags">
-                  # 链表
+                <a href="https://ama-non.github.io/tag/yt5bjLlYg" class="post-tags">
+                  # 位
                 </a>
               
                 <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
@@ -94,51 +94,39 @@
             </div>
             
             <div class="post-content">
-              <p>Given a linked list, return the node where the cycle begins. If there is no cycle, return null.</p>
-<p>To represent a cycle in the given linked list, we use an integer pos which represents the position (0-indexed) in the linked list where tail connects to. If pos is -1, then there is no cycle in the linked list.</p>
-<p><strong>Note:</strong> Do not modify the linked list.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> head = [3,2,0,-4], pos = 1
-<strong>Output:</strong> tail connects to node index 1<br>
-<strong>Explanation:</strong> There is a cycle in the linked list, where tail connects to the second node.</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> head = [1,2], pos = 0
-<strong>Output:</strong> tail connects to node index 0<br>
-<strong>Explanation:</strong> There is a cycle in the linked list, where tail connects to the first node.</p>
-<p><strong>Example3:</strong><br>
-<strong>Input:</strong> head = [1], pos = -1
-<strong>Output:</strong> no cycle<br>
-<strong>Explanation:</strong> There is no cycle in the linked list.</p>
-<p><strong>Follow up:</strong> Can you solve it without using extra space?</p>
+              <p>Given a non-empty array of integers, every element appears twice except for one. Find that single one.</p>
+<p><strong>Note:</strong></p>
+<p>Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> [2,2,1]<br>
+<strong>Output:</strong> 1</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> [4,1,2,1,2]<br>
+<strong>Output:</strong> 4</p>
 <hr>
-<h3 id="分析">分析：</h3>
+<p>分析：</p>
 <blockquote>
-<p>当fast与slow相遇时，slow肯定没有遍历完链表，而fast已经在环内循环了n圈(1 \leq n1≤n)。假设slow走了s步，则fast走了2s步（fast步数还等于s加上在环上多转的n圈），设环长为r，则：</p>
-<p><strong>2s = s + nr</strong></p>
-<p><strong>s = nr</strong></p>
-<p>设整个链表长L，环入口点与相遇点距离为a，起点到环入口点的距离为x，则</p>
-<p><strong>x + a = nr = (n – 1)r + r = (n - 1)r + L - x</strong></p>
-<p><strong>x = (n-1)r + (L – x – a)</strong></p>
-<p>L – x – a为相遇点到环入口点的距离，由此可知，从链表头到环入口点等于n-1圈内环+相遇点到环入口点，于是我们可以从head开始另设一个指针slow2，两个慢指针每次前进一步，它俩一定会在环入口点相遇。</p>
+<p>异或，不仅能处理两次的情况，只要出现偶数次，都可以清零</p>
+<ul>
+<li>If we take XOR of zero and some bit, it will return that bit</li>
+<li>a ⊕ 0 = a</li>
+</ul>
+<ul>
+<li>If we take XOR of two same bits, it will return 0</li>
+<li>a ⊕ a = 0</li>
+</ul>
+<ul>
+<li>a ⊕ b ⊕ a = (a ⊕ a) ⊕ b = 0 ⊕ b = b</li>
+</ul>
 </blockquote>
 <pre><code>class Solution {
 public:
-    ListNode *detectCycle(ListNode *head) {
-        ListNode *slow = head, *fast = head;
-        while (fast &amp;&amp; fast-&gt;next) {
-            slow = slow-&gt;next;
-            fast = fast-&gt;next-&gt;next;
-            if (slow == fast) {
-                ListNode *slow2 = head;
-
-                while (slow2 != slow) {
-                    slow2 = slow2-&gt;next;
-                    slow = slow-&gt;next;
-                }
-                return slow2;
-            }
+    int singleNumber(vector&lt;int&gt;&amp; nums) {
+        int x = 0;
+        for (int i : nums) {
+            x ^= i;
         }
-        return nullptr;
+        return x;
     }
 };
 </code></pre>
@@ -146,7 +134,7 @@ public:
 <hr>
 <h5 id="参考来源">参考来源：</h5>
 <ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/linked-list-cycle-ii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/linked-list-cycle-ii.html</a></li>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number.html</a></li>
 </ul>
 
             </div>
@@ -156,9 +144,9 @@ public:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://ama-non.github.io/post/remove-nth-node-from-end-of-list">
+            <a href="https://ama-non.github.io/post/number-of-1-bits">
               <h3 class="post-title">
-                Remove Nth Node From End of List
+                Number of 1 Bits
               </h3>
             </a>
           </div>  
