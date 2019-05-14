@@ -1,0 +1,313 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Longest Palindromic Substring | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557799074035">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1557799074035" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ama-non" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Longest Palindromic Substring
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-14 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/Sa1zNlYia" class="post-tags">
+                  # 字符串
+                </a>
+              
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;babad&quot;<br>
+<strong>Output:</strong> &quot;bab&quot;<br>
+<strong>Note:</strong> &quot;aba&quot; is also a valid answer.</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;cbbd&quot;<br>
+<strong>Output:</strong> &quot;bb&quot;</p>
+<hr>
+<h3 id="思路一动态规划c">思路一：动态规划(C++)</h3>
+<blockquote>
+<p>维护一个二维数组dp，其中dp[i][j]表示字符串区间[i, j]是否为回文串，当i = j时，只有一个字符，肯定是回文串，如果i = j + 1，说明是相邻字符，此时需要判断s[i]是否等于s[j]，如果i和j不相邻，即i - j &gt;= 2时，除了判断s[i]和s[j]相等之外，dp[j + 1][i - 1]若为真，就是回文串</p>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://ws4.sinaimg.cn/large/006tKfTcly1g1gdgp1gn6j30vy07awf5.jpg">
+   <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+   display: inline-block;
+   color: #999;
+   padding: 2px;">动态规划</div>
+</center> 
+</blockquote>
+<br>
+<pre><code>class Solution {
+public:
+    string longestPalindrome(const string&amp; s) {
+        if (s.size() == 0) return &quot;&quot;;
+        const int n = s.size();
+        bool f[n][n];
+        fill_n(&amp;f[0][0], n*n, false);
+        
+        size_t max_len = 1, start = 0;
+        
+        for (size_t i = 0; i &lt; s.size(); i++) {
+            f[i][i] = true; 
+            for (size_t j = 0; j &lt; i; j++) {
+                f[j][i] = (s[j] == s[i] &amp;&amp; (i - j &lt; 2 || f[j + 1][i - 1]));
+                if (f[j][i] &amp;&amp; max_len &lt; (i - j + 1)) {
+                    max_len = i - j + 1;
+                    start = j;
+                }
+            }
+        }
+        return s.substr(start, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n^2),空间复杂度o(n^2)</em></p>
+<hr>
+<h3 id="思路2扩展中心c">思路2：扩展中心(C++)</h3>
+<blockquote>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="http://windliang.oss-cn-beijing.aliyuncs.com/5_6.jpg">
+   <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+   display: inline-block;
+   color: #999;
+   padding: 2px;">扩展中心</div>
+</center> 
+</blockquote>
+<br>
+>
+>我们知道回文串一定是对称的，所以我们可以每次循环选择一个中心，进行左右扩展，判断左右字符是否相等即可。由于存在奇数的字符串和偶数的字符串，所以我们需要从一个字符开始扩展，或者从两个字符之间开始扩展，所以总共有 n + n - 1 个中心。
+<pre><code>class Solution {
+public:
+    std::string longestPalindrome(std::string s) {
+        if (s.size() &lt; 2)
+            return s;
+        int len = s.size(), max_left = 0, max_len = 1, left, right;
+        for (int start = 0; start &lt; len &amp;&amp; len - start &gt; max_len / 2;) {
+            left = right = start;
+            while (right &lt; len - 1 &amp;&amp; s[right + 1] == s[right])
+                ++right;
+            start = right + 1;
+            while (right &lt; len - 1 &amp;&amp; left &gt; 0 &amp;&amp; s[right + 1] == s[left - 1]) {
+                ++right;
+                --left;
+            }
+            if (max_len &lt; right - left + 1) {
+                max_left = left;
+                max_len = right - left + 1;
+            }
+        }
+        return s.substr(max_left, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n^2),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路3manachers-algorithmc">思路3：Manacher’s Algorithm(C++)</h3>
+<blockquote>
+<p><a href="http://www.cnblogs.com/grandyang/p/4475985.html">算法解析</a></p>
+</blockquote>
+<pre><code>class Solution {
+public:
+    // Transform S into T.
+    // For example, S = &quot;abba&quot;, T = &quot;^#a#b#b#a#$&quot;.
+    // ^ and $ signs are sentinels appended to each end to avoid bounds checking
+    string preProcess(const string&amp; s) {
+        int n = s.length();
+        if (n == 0) return &quot;^$&quot;;
+
+        string ret = &quot;^&quot;;
+        for (int i = 0; i &lt; n; i++) ret += &quot;#&quot; + s.substr(i, 1);
+
+        ret += &quot;#$&quot;;
+        return ret;
+    }
+
+    string longestPalindrome(string s) {
+        string T = preProcess(s);
+        const int n = T.length();
+        // 以T[i]为中心，向左/右扩张的长度，不包含T[i]自己，
+        // 因此 P[i]是源字符串中回文串的长度
+        int P[n];
+        int C = 0, R = 0;
+
+        for (int i = 1; i &lt; n - 1; i++) {
+            int i_mirror = 2 * C - i; // equals to i' = C - (i-C)
+
+            P[i] = (R &gt; i) ? min(R - i, P[i_mirror]) : 0;
+
+            // Attempt to expand palindrome centered at i
+            while (T[i + 1 + P[i]] == T[i - 1 - P[i]])
+                P[i]++;
+
+            // If palindrome centered at i expand past R,
+            // adjust center based on expanded palindrome.
+            if (i + P[i] &gt; R) {
+                C = i;
+                R = i + P[i];
+            }
+        }
+
+        // Find the maximum element in P.
+        int max_len = 0;
+        int center_index = 0;
+        for (int i = 1; i &lt; n - 1; i++) {
+            if (P[i] &gt; max_len) {
+                max_len = P[i];
+                center_index = i;
+            }
+        }
+
+        return s.substr((center_index - 1 - max_len) / 2, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n)，空间复杂度o(n)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/longest-palindromic-substring.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/longest-palindromic-substring.html</a></li>
+</ul>
+<ul>
+<li><a href="https://www.cnblogs.com/grandyang/p/4464476.html">https://www.cnblogs.com/grandyang/p/4464476.html</a></li>
+</ul>
+<ul>
+<li><a href="http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/">http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/single-number-iii">
+              <h3 class="post-title">
+                Single Number III
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
