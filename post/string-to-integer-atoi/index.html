@@ -1,0 +1,233 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>String to Integer (atoi) | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1557803086313">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1557803086313" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ama-non" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              String to Integer (atoi)
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-14 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/Sa1zNlYia" class="post-tags">
+                  # 字符串
+                </a>
+              
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Implement atoi to convert a string to an integer.</p>
+<p><strong>Hint:</strong> Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.</p>
+<p><strong>Notes:</strong> It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.</p>
+<p><strong>Requirements for atoi:</strong></p>
+<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;42&quot;<br>
+<strong>Output:</strong> 42</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;   -42&quot;<br><br>
+<strong>Output:</strong> 42<br>
+<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.
+Then take as many numerical digits as possible, which gets 42.</p>
+<p><strong>Example 3:</strong><br>
+<strong>Input:</strong> &quot;words and 987&quot;<br><br>
+<strong>Output:</strong> 0<br>
+<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical
+digit or a +/- sign. Therefore no valid conversion could be performed.</p>
+<p><strong>Example 4:</strong><br><br>
+<strong>Input:</strong> &quot;4193 with words&quot;<br>
+<strong>Output:</strong> 4193<br>
+<strong>Explanation:</strong> Conversion stops at digit '3' as the next character is not a numerical digit.</p>
+<p><strong>Example 5:</strong><br>
+<strong>Input:</strong> &quot;-91283472332&quot;<br>
+<strong>Output:</strong> -2147483648<br>
+<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.
+Thefore INT_MIN (−2^31) is returned.</p>
+<hr>
+<h3 id="思路">思路</h3>
+<blockquote>
+<p>细节题。注意以下的测试用例</p>
+<ul>
+<li>不规则输入</li>
+</ul>
+<ul>
+<li>无效格式</li>
+</ul>
+<ul>
+<li>溢出数据</li>
+</ul>
+</blockquote>
+<pre><code>class Solution {
+public:
+    int myAtoi(const string &amp;str) {
+        int num = 0;
+        int sign = 1;
+        const int n = str.length();
+        if (n == 0) return 0;
+
+        int i = 0;
+        while (str[i] == ' ' &amp;&amp; i &lt; n) i++;
+
+        if (str[i] == '+') {
+            i++;
+        } else if (str[i] == '-') {
+            sign = -1;
+            i++;
+        }
+
+        for (; i &lt; n; i++) {
+            if (str[i] &lt; '0' || str[i] &gt; '9')
+                break;
+            if (num &gt; INT_MAX / 10 ||
+                            (num == INT_MAX / 10 &amp;&amp;
+                                    (str[i] - '0') &gt; INT_MAX % 10)) {
+                return sign == -1 ? INT_MIN : INT_MAX;
+            }
+            num = num * 10 + (str[i] - '0');
+        }
+        return num * sign;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/atoi.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/atoi.html</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/longest-substring-without-repeating-characters">
+              <h3 class="post-title">
+                Longest Substring Without Repeating Characters
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
