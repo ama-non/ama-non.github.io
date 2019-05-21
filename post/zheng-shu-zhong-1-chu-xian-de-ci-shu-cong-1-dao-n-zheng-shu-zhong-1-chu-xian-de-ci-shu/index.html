@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>整数中1出现的次数（从1到n整数中1出现的次数） | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1558441891187">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1558448077230">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1558441891187" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1558448077230" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -99,13 +99,13 @@
 <h3 id="分析">分析：</h3>
 <p>像类似这样的问题，我们可以通过归纳总结来获取相关的东西。</p>
 <p>首先可以先分类：</p>
-<h5 id="个位">个位：</h5>
+<h4 id="个位">个位：</h4>
 <p>我们知道在个位数上，1会每隔10出现一次，例如1、11、21等等，我们发现以10为一个阶梯的话，每一个完整的阶梯里面都有一个1，例如数字22，按照10为间隔来分三个阶梯，在完整阶梯0-9，10-19之中都有一个1，但是19之后有一个不完整的阶梯，我们需要去判断这个阶梯中会不会出现1，易推断知，如果最后这个露出来的部分小于1，则不可能出现1（这个归纳换做其它数字也成立）。</p>
 <p>我们可以归纳个位上1出现的个数为：</p>
 <blockquote>
 <p><strong>n/10 * 1+(n%10!=0 ? 1 : 0)</strong></p>
 </blockquote>
-<h5 id="十位">十位：</h5>
+<h4 id="十位">十位：</h4>
 <p>现在说十位数，十位数上出现1的情况应该是10-19，依然沿用分析个位数时候的阶梯理论，我们知道10-19这组数，每隔100出现一次，这次我们的阶梯是100，例如数字317，分析有阶梯0-99，100-199，200-299三段完整阶梯，每一段阶梯里面都会出现10次1（从10-19），最后分析露出来的那段不完整的阶梯。我们考虑如果露出来的数大于19，那么直接算10个1就行了，因为10-19肯定会出现；如果小于10，那么肯定不会出现十位数的1；如果在10-19之间的，我们计算结果应该是k - 10 + 1。例如我们分析300-317，17个数字，1出现的个数应该是17-10+1=8个。</p>
 <p>那么现在可以归纳：十位上1出现的个数为：</p>
 <blockquote>
@@ -114,7 +114,7 @@
 <li>归纳式为：<strong>(n / 100) * 10 + (if(k &gt; 19) 10 else if(k &lt; 10) 0 else k - 10 + 1)</strong></li>
 </ul>
 </blockquote>
-<h5 id="百位">百位：</h5>
+<h4 id="百位">百位：</h4>
 <p>现在说百位1，我们知道在百位，100-199都会出现百位1，一共出现100次，阶梯间隔为1000，100-199这组数，每隔1000就会出现一次。这次假设我们的数为2139。跟上述思想一致，先算阶梯数 * 完整阶梯中1在百位出现的个数，即n/1000 * 100得到前两个阶梯中1的个数，那么再算漏出来的部分139，沿用上述思想，不完整阶梯数k199，得到100个百位1，100&lt;=k&lt;=199则得到k - 100 + 1个百位1。</p>
 <p>那么继续归纳百位上出现1的个数：</p>
 <blockquote>
@@ -124,7 +124,7 @@
 </ul>
 </blockquote>
 <p>后面的依次类推...</p>
-<h5 id="再次回顾个位">再次回顾个位</h5>
+<h4 id="再次回顾个位">再次回顾个位</h4>
 <p>我们把个位数上算1的个数的式子也纳入归纳式中</p>
 <blockquote>
 <ul>
