@@ -1,0 +1,207 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>孩子们的游戏(圆圈中最后剩下的数) | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1558706113339">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1558706113339" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ama-non" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              孩子们的游戏(圆圈中最后剩下的数)
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-24 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/1Z66CE8Mi" class="post-tags">
+                  # 剑指offer
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<h4 id="方法一">方法一：</h4>
+<p>利用循环链表模拟圆圈，每次在这个链表中删除第m个节点。</p>
+<p>(可以用队列的先入先出特性来模拟这一过程)</p>
+<pre><code class="language-c++">class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if (n &lt; 1 || m &lt; 1) return -1;
+        queue&lt;int&gt; q;
+        for (int i = 0; i &lt; n; i++) {
+            q.push(i);
+        }
+        while (q.size() &gt; 1) {
+            for (int i = 0; i &lt; m - 1; i++) {
+                q.push(q.front());
+                q.pop();
+            }
+            q.pop();
+        }
+        return q.front();
+    }
+};
+</code></pre>
+<h4 id="方法二">方法二：</h4>
+<blockquote>
+<p>利用通项公式：</p>
+<center>
+<img style="border-radius: 0.3125em;
+box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 >rgba(34,36,38,.08);" 
+src="http://ww1.sinaimg.cn/large/006tNc79ly1g3cqu7pgmej31iq0bn42f.jpg">
+</center> 
+<p>当有n个人时，报数为m的人编号为（m - 1）%n，出列，这算一轮；接下来有n - 1个人，这回是从编号为m%n的人开始报数，这次是<strong>第一轮编号</strong>为[m + (m - 1) % (n-1)]%n的人出列，如果每一轮编号都<strong>从开始报数的那个人开始算</strong>，那么第二轮出列的人<strong>在第二轮的编号</strong>是(m-1)%(n-1)，剩下各轮也是这个套路。</p>
+<p>很明显，对于每一轮而言，当前轮出列的人可以有<strong>两个编号</strong>，一个编号是从上一轮开始报数的人开始算的编号，一个是从这一轮开始报数的人的编号。</p>
+<p>从第一轮到最后一轮（只剩一个人），我们的<strong>目标都是一样的</strong>，就是求最后一轮的人在第一轮中的编号。相邻两轮的差别在于，开始报数的人不一样，总人数也不一样，而这种差别同样适用于最后一轮和倒数第二轮，也就是说，对于最后一轮来说，最后留下来的人正是最后一轮开始报数的人。</p>
+<p>那么问题就简单了，我们只需要求出<strong>相邻的两轮之间，同一个人在后一轮的编号和在前一轮里的编号</strong>（再次强调，这个编号不是指第一轮里的编号，而是任意一轮，从开始报数的人开始算的编号）</p>
+<p>最后一轮报数的人在最后一轮的编号为0，那么这个人在倒数第二轮里的编号是多少就可以求出来，求出倒数第二轮的对应编号，那么这个人对应到倒数第三轮是多少也可以求出来……直到对应到第一轮，因为我们最后想要的，就是以第一轮编号为基准的最后留下的人的编号。</p>
+</blockquote>
+<pre><code class="language-c++">class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if (n &lt; 1 || m &lt; 1) return -1;
+        
+        int s = 0;
+        for (int i = 2; i &lt;= n; i++) 
+            s = (s + m) % i;
+        
+        return s;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://www.zhihu.com/question/20065611">https://www.zhihu.com/question/20065611</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/chou-shu">
+              <h3 class="post-title">
+                丑数
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
