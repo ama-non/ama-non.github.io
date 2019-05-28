@@ -1,0 +1,292 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Serialize and Deserialize Binary Tree | ama-non</title>
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://ama-non.github.io">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  </a>
+  <h1 class="site-title">
+    ama-non
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/ama-non" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Serialize and Deserialize Binary Tree
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-05-29 ·
+              </time>
+              
+                <a href="https://ama-non.github.io/tag/wfktf4LKV" class="post-tags">
+                  # 树
+                </a>
+              
+                <a href="https://ama-non.github.io/tag/7DtkJ_uve" class="post-tags">
+                  # LeetCode
+                </a>
+              
+            </div>
+            
+            <div class="post-content">
+              <p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
+<p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
+<p><strong>Example:</strong></p>
+<pre><code>You may serialize the following tree:
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+as &quot;[1,2,3,null,null,4,5]&quot;
+</code></pre>
+<p><strong>Clarification:</strong> The above format is the same as <a href="https://leetcode.com/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
+<p><strong>Note:</strong> Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<h4 id="递归">递归：</h4>
+<p>利用先序遍历，空节点用特殊符号如&quot;#&quot;代替，为了在反序列时找到每个节点，序列间节点间可以用' , '隔开。</p>
+<pre><code class="language-c++">class Codec {
+public:
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if (root == nullptr) return &quot;#&quot;;
+        return to_string(root-&gt;val)+&quot;,&quot;+serialize(root-&gt;left)+&quot;,&quot;+serialize(root-&gt;right);
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        return mydeserialize(data);
+    }
+    TreeNode* mydeserialize(string&amp; data) {
+        if (data[0]=='#') {
+            if(data.size() &gt; 1) data = data.substr(2);
+            return nullptr;
+        } else {
+            TreeNode* node = new TreeNode(helper(data));
+            node-&gt;left = mydeserialize(data);
+            node-&gt;right = mydeserialize(data);
+            return node;
+        }
+    }
+private:
+    int helper(string&amp; data) {
+        int pos = data.find(',');
+        int val = stoi(data.substr(0,pos));
+        data = data.substr(pos+1);
+        return val;
+    }
+};
+</code></pre>
+<p>在剑指offer中，函数的返回类型为char*，因此需要与字符串进行转换：</p>
+<pre><code class="language-c++">/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:    
+    char* Serialize(TreeNode *root) {    
+        string s = serializeHelper(root);
+        char *str = new char[s.length() + 1];
+        strcpy(str, s.c_str());
+        return str;
+    }
+    
+    string serializeHelper(TreeNode *node) {
+        if (node == NULL) return &quot;#&quot;;
+        return to_string(node-&gt;val) + &quot;,&quot; + serializeHelper(node-&gt;left) + &quot;,&quot; + serializeHelper(node-&gt;right);
+    }
+    
+    TreeNode* Deserialize(char *str) {
+        string s(str);
+        return myDeserialize(s);
+    }
+    
+    TreeNode* myDeserialize(string &amp;s) {
+        if (s[0] == '#') {
+            if (s.size() &gt; 1) s= s.substr(2);
+            return nullptr;
+        } else {
+            TreeNode *node = new TreeNode(helper(s));
+            node-&gt;left = myDeserialize(s);
+            node-&gt;right = myDeserialize(s);
+            return node;
+        }
+    }
+private:
+    int helper(string &amp;s) {
+        int pos = s.find(',');
+        int val = stoi(s.substr(0, pos));
+        s = s.substr(pos + 1);
+        return val;
+    }
+};
+</code></pre>
+<p>但是，手动进行string与char*之间的转换效率很低：</p>
+<p>*Runtime：*152ms，*Memory：*534.6MB</p>
+<p>因此采用stringstream可以使代码更加简洁并且效率更高：</p>
+<p>*Runtime：*36ms，<em>Memory</em>： 34.3MB</p>
+<pre><code class="language-c++">class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if (root == NULL) return &quot;#&quot;;
+        return to_string(root-&gt;val) + &quot;,&quot; + serialize(root-&gt;left) + &quot;,&quot; + serialize(root-&gt;right);
+    }
+
+    TreeNode* deserialize(string data) {
+        if (data == &quot;#&quot;) return NULL;
+        stringstream s(data);
+        return makeDeserialize(s);
+    }
+    
+    TreeNode* makeDeserialize(stringstream&amp; s) {
+        string str;
+        getline(s, str, ',');
+        if (str == &quot;#&quot;) {
+            return NULL;
+        } else {
+            TreeNode* root = new TreeNode(stoi(str));
+            root-&gt;left = makeDeserialize(s);
+            root-&gt;right = makeDeserialize(s);
+            return root;
+        }
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/discuss/74252/Clean-C%2B%2B-solution">https://leetcode.com/problems/serialize-and-deserialize-binary-tree/discuss/74252/Clean-C%2B%2B-solution</a></li>
+<li><a href="https://www.youtube.com/watch?v=suj1ro8TIVY">https://www.youtube.com/watch?v=suj1ro8TIVY</a></li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://ama-non.github.io/post/hai-zi-men-de-you-xi-yuan-quan-zhong-zui-hou-sheng-xia-de-shu">
+              <h3 class="post-title">
+                孩子们的游戏(圆圈中最后剩下的数)
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'd9a6834c8bed45ea689a',
+    clientSecret: 'ec5fd223bd9136cf7457bda2b8ab6f793ab4b5dd',
+    repo: 'ama-non.github.io',
+    owner: 'ama-non',
+    admin: ['ama-non'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
