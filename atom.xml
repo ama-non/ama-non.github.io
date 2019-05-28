@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://ama-non.github.io</id>
+    <title>ama-non</title>
+    <updated>2019-05-28T02:46:40.879Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://ama-non.github.io"/>
+    <link rel="self" href="https://ama-non.github.io/atom.xml"/>
+    <logo>https://ama-non.github.io/images/avatar.png</logo>
+    <icon>https://ama-non.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2019, ama-non</rights>
+    <entry>
+        <title type="html"><![CDATA[孩子们的游戏(圆圈中最后剩下的数)]]></title>
+        <id>https://ama-non.github.io/post/hai-zi-men-de-you-xi-yuan-quan-zhong-zui-hou-sheng-xia-de-shu</id>
+        <link href="https://ama-non.github.io/post/hai-zi-men-de-you-xi-yuan-quan-zhong-zui-hou-sheng-xia-de-shu">
+        </link>
+        <updated>2019-05-24T13:53:58.000Z</updated>
+        <content type="html"><![CDATA[<p>每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<h4 id="方法一">方法一：</h4>
+<p>利用循环链表模拟圆圈，每次在这个链表中删除第m个节点。</p>
+<p>(可以用队列的先入先出特性来模拟这一过程)</p>
+<pre><code class="language-c++">class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if (n &lt; 1 || m &lt; 1) return -1;
+        queue&lt;int&gt; q;
+        for (int i = 0; i &lt; n; i++) {
+            q.push(i);
+        }
+        while (q.size() &gt; 1) {
+            for (int i = 0; i &lt; m - 1; i++) {
+                q.push(q.front());
+                q.pop();
+            }
+            q.pop();
+        }
+        return q.front();
+    }
+};
+</code></pre>
+<h4 id="方法二">方法二：</h4>
+<blockquote>
+<p>利用通项公式：</p>
+<center>
+<img style="border-radius: 0.3125em;
+box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 >rgba(34,36,38,.08);" 
+src="http://ww1.sinaimg.cn/large/006tNc79ly1g3cqu7pgmej31iq0bn42f.jpg">
+</center> 
+<p>当有n个人时，报数为m的人编号为（m - 1）%n，出列，这算一轮；接下来有n - 1个人，这回是从编号为m%n的人开始报数，这次是<strong>第一轮编号</strong>为[m + (m - 1) % (n-1)]%n的人出列，如果每一轮编号都<strong>从开始报数的那个人开始算</strong>，那么第二轮出列的人<strong>在第二轮的编号</strong>是(m-1)%(n-1)，剩下各轮也是这个套路。</p>
+<p>很明显，对于每一轮而言，当前轮出列的人可以有<strong>两个编号</strong>，一个编号是从上一轮开始报数的人开始算的编号，一个是从这一轮开始报数的人的编号。</p>
+<p>从第一轮到最后一轮（只剩一个人），我们的<strong>目标都是一样的</strong>，就是求最后一轮的人在第一轮中的编号。相邻两轮的差别在于，开始报数的人不一样，总人数也不一样，而这种差别同样适用于最后一轮和倒数第二轮，也就是说，对于最后一轮来说，最后留下来的人正是最后一轮开始报数的人。</p>
+<p>那么问题就简单了，我们只需要求出<strong>相邻的两轮之间，同一个人在后一轮的编号和在前一轮里的编号</strong>（再次强调，这个编号不是指第一轮里的编号，而是任意一轮，从开始报数的人开始算的编号）</p>
+<p>最后一轮报数的人在最后一轮的编号为0，那么这个人在倒数第二轮里的编号是多少就可以求出来，求出倒数第二轮的对应编号，那么这个人对应到倒数第三轮是多少也可以求出来……直到对应到第一轮，因为我们最后想要的，就是以第一轮编号为基准的最后留下的人的编号。</p>
+</blockquote>
+<pre><code class="language-c++">class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if (n &lt; 1 || m &lt; 1) return -1;
+        
+        int s = 0;
+        for (int i = 2; i &lt;= n; i++) 
+            s = (s + m) % i;
+        
+        return s;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://www.zhihu.com/question/20065611">https://www.zhihu.com/question/20065611</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[丑数]]></title>
+        <id>https://ama-non.github.io/post/chou-shu</id>
+        <link href="https://ama-non.github.io/post/chou-shu">
+        </link>
+        <updated>2019-05-21T14:07:52.000Z</updated>
+        <content type="html"><![CDATA[<p>把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<p>首先从丑数的定义我们知道，一个丑数的因子只有2,3,5，那么丑数p = 2 ^ x * 3 ^ y * 5 ^ z，换句话说一个丑数一定由另一个丑数乘以2或者乘以3或者乘以5得到，那么我们从1开始乘以2,3,5，就得到2,3,5三个丑数，在从这三个丑数出发乘以2,3,5就得到4，6,10,6，9,15,10,15,25九个丑数，我们发现这种方法会得到重复的丑数，而且我们题目要求第N个丑数，这样的方法得到的丑数也是无序的。那么我们可以维护三个队列：</p>
+<p><strong>（1）丑数数组： 1</strong></p>
+<p><strong>乘以2的队列：2</strong></p>
+<p><strong>乘以3的队列：3</strong></p>
+<p><strong>乘以5的队列：5</strong></p>
+<p><strong>选择三个队列头最小的数2加入丑数数组，同时将该最小的数乘以2,3,5放入三个队列；</strong></p>
+<p><strong>（2）丑数数组：1,2</strong></p>
+<p>​    <strong>乘以2的队列：4</strong></p>
+<p>​    <strong>乘以3的队列：3，6</strong></p>
+<p>​    <strong>乘以5的队列：5，10</strong></p>
+<p>​    <strong>选择三个队列头最小的数3加入丑数数组，同时将该最小的数乘以2,3,5放入三个队列；</strong></p>
+<p>​    <strong>（3）丑数数组：1,2,3</strong></p>
+<p>​    <strong>乘以2的队列：4,6</strong></p>
+<p>​    <strong>乘以3的队列：6,9</strong></p>
+<p>​    <strong>乘以5的队列：5,10,15</strong></p>
+<p>​    <strong>选择三个队列头里最小的数4加入丑数数组，同时将该最小的数乘以2,3,5放入三个队列；</strong></p>
+<p>​    <strong>（4）丑数数组：1,2,3,4</strong></p>
+<p>​    <strong>乘以2的队列：6，8</strong></p>
+<p>​    <strong>乘以3的队列：6,9,12</strong></p>
+<p>​    <strong>乘以5的队列：5,10,15,20</strong></p>
+<p>​    <strong>选择三个队列头里最小的数5加入丑数数组，同时将该最小的数乘以2,3,5放入三个队列；</strong></p>
+<p>​    <strong>（5）丑数数组：1,2,3,4,5</strong></p>
+<p>​    <strong>乘以2的队列：6,8,10，</strong></p>
+<p>​    <strong>乘以3的队列：6,9,12,15</strong></p>
+<p>​    <strong>乘以5的队列：10,15,20,25</strong></p>
+<p>​    <strong>选择三个队列头里最小的数6加入丑数数组，但我们发现，有两个队列头都为6，所以我们弹出两个队列头，同时将12,18,30放入三个队列；</strong></p>
+<hr>
+<h4 id="疑问">疑问：</h4>
+<p>​    <strong>1.为什么分三个队列？</strong></p>
+<p>​    丑数数组里的数一定是有序的，因为我们是从丑数数组里的数乘以2,3,5选出的最小数，一定比以前未乘以2,3,5大，同时对于三个队列内部，按先后顺序乘以2,3,5分别放入，所以同一个队列内部也是有序的；</p>
+<p>​    <strong>2.为什么比较三个队列头部最小的数放入丑数数组？</strong></p>
+<p>​    因为三个队列是有序的，所以取出三个头中最小的，等同于找到了三个队列所有数中最小的。</p>
+<p><strong>（1）1</strong></p>
+<p>​    <strong>|2</strong></p>
+<p>​    <strong>|3</strong></p>
+<p>​    <strong>|5</strong></p>
+<p>​    <strong>目前指针指向0,0,0，队列头arr[0] * 2 = 2,  arr[0] * 3 = 3,  arr[0] * 5 = 5</strong></p>
+<p>​    <strong>（2）1 2</strong></p>
+<p>​    <strong>2 |4</strong></p>
+<p>​    <strong>|3 6</strong></p>
+<p>​    <strong>|5 10</strong></p>
+<p>​    <strong>目前指针指向1,0,0，队列头arr[1] * 2 = 4,  arr[0] * 3 = 3, arr[0] * 5 = 5</strong></p>
+<p>​    <strong>（3）1 2 3</strong></p>
+<p>​    <strong>2| 4 6</strong></p>
+<p>​    <strong>3 |6 9</strong></p>
+<p>​    <strong>|5 10 15</strong></p>
+<p><strong>目前指针指向1,1,0，队列头arr[1] * 2 = 4,  arr[1] * 3 = 6, arr[0] * 5 = 5</strong></p>
+<pre><code class="language-c++">class Solution {
+public:
+    int GetUglyNumber_Solution(int index) {
+        if (index &lt; 7) return index;
+        vector&lt;int&gt; res(index);
+        res[0] = 1;
+        int t2 = 0, t3 = 0, t5 = 0;
+        for (int i = 1; i &lt; index; i++) {
+            res[i] = min(res[t2] * 2, min(res[t3] * 3, res[t5] * 5));
+            if (res[i] == res[t2] * 2) t2++;
+            if (res[i] == res[t3] * 3) t3++;
+            if (res[i] == res[t5] * 5) t5++;
+        }
+        return res[index - 1];
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考文献">参考文献：</h5>
+<ul>
+<li><a href="https://www.nowcoder.com/questionTerminal/6aa9e04fc3794f68acf8778237ba065b">https://www.nowcoder.com/questionTerminal/6aa9e04fc3794f68acf8778237ba065b</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[整数中1出现的次数（从1到n整数中1出现的次数）]]></title>
+        <id>https://ama-non.github.io/post/zheng-shu-zhong-1-chu-xian-de-ci-shu-cong-1-dao-n-zheng-shu-zhong-1-chu-xian-de-ci-shu</id>
+        <link href="https://ama-non.github.io/post/zheng-shu-zhong-1-chu-xian-de-ci-shu-cong-1-dao-n-zheng-shu-zhong-1-chu-xian-de-ci-shu">
+        </link>
+        <updated>2019-05-21T12:23:03.000Z</updated>
+        <content type="html"><![CDATA[<p>求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1 到 n 中1出现的次数）。</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<p>像类似这样的问题，我们可以通过归纳总结来获取相关的东西。</p>
+<p>首先可以先分类：</p>
+<h4 id="个位">个位：</h4>
+<p>我们知道在个位数上，1会每隔10出现一次，例如1、11、21等等，我们发现以10为一个阶梯的话，每一个完整的阶梯里面都有一个1，例如数字22，按照10为间隔来分三个阶梯，在完整阶梯0-9，10-19之中都有一个1，但是19之后有一个不完整的阶梯，我们需要去判断这个阶梯中会不会出现1，易推断知，如果最后这个露出来的部分小于1，则不可能出现1（这个归纳换做其它数字也成立）。</p>
+<p>我们可以归纳个位上1出现的个数为：</p>
+<blockquote>
+<p><strong>n/10 * 1+(n%10!=0 ? 1 : 0)</strong></p>
+</blockquote>
+<h4 id="十位">十位：</h4>
+<p>现在说十位数，十位数上出现1的情况应该是10-19，依然沿用分析个位数时候的阶梯理论，我们知道10-19这组数，每隔100出现一次，这次我们的阶梯是100，例如数字317，分析有阶梯0-99，100-199，200-299三段完整阶梯，每一段阶梯里面都会出现10次1（从10-19），最后分析露出来的那段不完整的阶梯。我们考虑如果露出来的数大于19，那么直接算10个1就行了，因为10-19肯定会出现；如果小于10，那么肯定不会出现十位数的1；如果在10-19之间的，我们计算结果应该是k - 10 + 1。例如我们分析300-317，17个数字，1出现的个数应该是17-10+1=8个。</p>
+<p>那么现在可以归纳：十位上1出现的个数为：</p>
+<blockquote>
+<ul>
+<li>设k = n % 100，即为不完整阶梯段的数字</li>
+<li>归纳式为：<strong>(n / 100) * 10 + (if(k &gt; 19) 10 else if(k &lt; 10) 0 else k - 10 + 1)</strong></li>
+</ul>
+</blockquote>
+<h4 id="百位">百位：</h4>
+<p>现在说百位1，我们知道在百位，100-199都会出现百位1，一共出现100次，阶梯间隔为1000，100-199这组数，每隔1000就会出现一次。这次假设我们的数为2139。跟上述思想一致，先算阶梯数 * 完整阶梯中1在百位出现的个数，即n/1000 * 100得到前两个阶梯中1的个数，那么再算漏出来的部分139，沿用上述思想，不完整阶梯数k199，得到100个百位1，100&lt;=k&lt;=199则得到k - 100 + 1个百位1。</p>
+<p>那么继续归纳百位上出现1的个数：</p>
+<blockquote>
+<ul>
+<li>设k = n % 1000</li>
+<li>归纳式为：<strong>(n / 1000) * 100 + (if(k &gt;199) 100 else if(k &lt; 100) 0 else k - 100 + 1)</strong></li>
+</ul>
+</blockquote>
+<p>后面的依次类推...</p>
+<h4 id="再次回顾个位">再次回顾个位</h4>
+<p>我们把个位数上算1的个数的式子也纳入归纳式中</p>
+<blockquote>
+<ul>
+<li>k = n % 10</li>
+<li>个位数上1的个数为：<strong>n / 10 * 1 + (if(k &gt; 1) 1 else if(k &lt; 1) 0 else k - 1 + 1)</strong></li>
+</ul>
+</blockquote>
+<p>完美！归纳式看起来已经很规整了。 来一个更抽象的归纳，设i为计算1所在的位数，i=1表示计算个位数的1的个数，10表示计算十位数的1的个数等等。</p>
+<blockquote>
+<p>k = n % (i * 10)</p>
+<p><strong>count(i) = (n / (i * 10)) * i + (if(k &gt; i * 2 - 1) i else if(k &lt; i) 0 else k - i + 1)</strong></p>
+</blockquote>
+<p>好了，这样从10到10的n次方的归纳就完成了。</p>
+<pre><code class="language-c++">class Solution {
+public:
+    int NumberOf1Between1AndN_Solution(int n)
+    {
+        if (n &lt;= 0) return 0;
+        int count = 0;
+        for (long i = 1; i &lt;= n; i *= 10) {
+            long divider = i * 10;
+            count += (n / divider) * i; 
+            long k = n % divider;
+            if (k &gt; i * 2 - 1) 
+                count += i;
+            else if (k &lt; i) 
+                count += 0;
+            else 
+                count += k - i + 1;
+        }
+        return count;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://www.nowcoder.com/questionTerminal/bd7f978302044eee894445e244c7eee6">https://www.nowcoder.com/questionTerminal/bd7f978302044eee894445e244c7eee6</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[字符串全排列]]></title>
+        <id>https://ama-non.github.io/post/zi-fu-chuan-quan-pai-lie</id>
+        <link href="https://ama-non.github.io/post/zi-fu-chuan-quan-pai-lie">
+        </link>
+        <updated>2019-05-14T07:46:05.000Z</updated>
+        <content type="html"><![CDATA[<p>用C++写一个函数, 如 Foo(const char *str), 打印出 str 的全排列,</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;abc&quot;<br>
+<strong>Output:</strong> &quot;abc, acb, bca, dac, cab, cba&quot;</p>
+<hr>
+<h3 id="思路一非去重递归实现c语言">思路一：非去重递归实现(C语言)</h3>
+<blockquote>
+<p>全排列可以看做固定前i位，对第i+1位之后的再进行全排列，比如固定第一位，后面跟着n-1位的全排列。那么解决n-1位元素的全排列就能解决n位元素的全排列了，这样的设计很容易就能用递归实现。</p>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://img-blog.csdn.net/20170306152355265?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc3VtbWVyeGlhY2hlbg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+</center>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://img-blog.csdn.net/20170306152327780?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc3VtbWVyeGlhY2hlbg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+</center>
+</blockquote>
+<pre><code>//全排列的递归实现
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+void Swap(char *a, char *b)
+{
+	char t = *a;
+	*a = *b;
+	*b = t;
+}
+//k表示当前选取到第几个数,m表示共有多少数.
+void AllRange(char *pszStr, int k, int m)
+{
+	if (k == m) //当尝试对不存在的数组元素进行递归时，标明所有数已经排列完成，输出
+	{
+		static int s_i = 1;
+		printf(&quot;  第%3d个排列\t%s\n&quot;, s_i++, pszStr);
+	}
+	else
+	{
+		for (int i = k; i &lt;= m; i++) //第i个数分别与它后面的数字交换就能得到新的排列
+		{
+			Swap(pszStr + k, pszStr + i); 
+      //i是从k开始 i=k;swap(k,i)相当于固定当前位置，再进行下一位的排列
+			AllRange(pszStr, k + 1, m);
+			Swap(pszStr + k, pszStr + i);
+		}
+	}
+}
+void Foo(char *pszStr)
+{
+	AllRange(pszStr, 0, strlen(pszStr) - 1);
+}
+int main()
+{
+	printf(&quot;         全排列的递归实现\n&quot;);
+	char szTextStr[] = &quot;123&quot;;
+	printf(&quot;%s的全排列如下:\n&quot;, szTextStr);
+	Foo(szTextStr);
+	return 0;
+}
+</code></pre>
+<hr>
+<p>###思路二：去重递归实现</p>
+<blockquote>
+<p>由于全排列就是从第一个数字起每个数分别与它后面的数字交换。我们先尝试加个这样的判断——如果一个数与后面的数字相同那么这二个数就不交换了。如122，第一个数与后面交换得212、221。然后122中第二数就不用与第三个数交换了，但对212，它第二个数与第三个数是不相同的，交换之后得到221。与由122中第一个数与第三个数交换所得的221重复了。所以这个方法不行。
+换种思维，对122，第一个数1与第二个数2交换得到212，然后考虑第一个数1与第三个数2交换，此时由于第三个数等于第二个数，所以第一个数不再与第三个数交换。再考虑212，它的第二个数与第三个数交换可以得到解决221。此时全排列生成完毕。
+这样我们也得到了在全排列中去掉重复的规则——去重的全排列就是从第一个数字起每个数分别与它后面非重复出现的数字交换。用编程的话描述就是第i个数与第j个数交换时，要求[i,j)中没有与第j个数相等的数。</p>
+</blockquote>
+<pre><code>//去重全排列的递归实现
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+void Swap(char *a, char *b)
+{
+	char t = *a;
+	*a = *b;
+	*b = t;
+}
+//在pszStr数组中，[nBegin,nEnd)中是否有数字与下标为nEnd的数字相等
+bool IsSwap(char *pszStr, int nBegin, int nEnd)
+{
+	for (int i = nBegin; i &lt; nEnd; i++)
+		if (pszStr[i] == pszStr[nEnd])
+			return false;
+	return true;
+}
+//k表示当前选取到第几个数,m表示共有多少数.
+void AllRange(char *pszStr, int k, int m)
+{
+	if (k == m)
+	{
+		static int s_i = 1;
+		printf(&quot;  第%3d个排列\t%s\n&quot;, s_i++, pszStr);
+	}
+	else
+	{
+		for (int i = k; i &lt;= m; i++) //第i个数分别与它后面的数字交换就能得到新的排列
+		{
+			if (IsSwap(pszStr, k, i))
+			{
+				Swap(pszStr + k, pszStr + i);
+				AllRange(pszStr, k + 1, m);
+				Swap(pszStr + k, pszStr + i);
+			}
+		}
+	}
+}
+void Foo(char *pszStr)
+{
+	AllRange(pszStr, 0, strlen(pszStr) - 1);
+}
+int main()
+{
+	printf(&quot;         去重全排列的递归实现\n&quot;);
+	char szTextStr[] = &quot;122&quot;;
+	printf(&quot;%s的全排列如下:\n&quot;, szTextStr);
+	Foo(szTextStr);
+	return 0;
+}
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://blog.csdn.net/morewindows/article/details/7370155">https://blog.csdn.net/morewindows/article/details/7370155</a></li>
+</ul>
+<ul>
+<li><a href="https://blog.csdn.net/summerxiachen/article/details/60579623">https://blog.csdn.net/summerxiachen/article/details/60579623</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Reverse Words in a String]]></title>
+        <id>https://ama-non.github.io/post/reverse-words-in-a-string</id>
+        <link href="https://ama-non.github.io/post/reverse-words-in-a-string">
+        </link>
+        <updated>2019-05-14T03:22:09.000Z</updated>
+        <content type="html"><![CDATA[<p>Given an input string, reverse the string word by word.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;the sky is blue&quot;<br>
+<strong>Output:</strong> &quot;blue is sky the&quot;</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;  hello world!  &quot;<br>
+<strong>Output:</strong> &quot;world! hello&quot;<br>
+<strong>Explanation:</strong> Your reversed string should not contain leading or trailing spaces.</p>
+<p><strong>Example 3:</strong><br>
+<strong>Input:</strong> &quot;a good   example&quot;<br>
+<strong>Output:</strong> &quot;example good a&quot;<br>
+<strong>Explanation:</strong> You need to reduce multiple spaces between two words to a single space in the reversed string.</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>A word is defined as a sequence of non-space characters.</li>
+</ul>
+<ul>
+<li>Input string may contain leading or trailing spaces. However, your reversed string should not contain leading or trailing spaces.</li>
+</ul>
+<ul>
+<li>You need to reduce multiple spaces between two words to a single space in the reversed string.</li>
+</ul>
+<hr>
+<h3 id="思路一">思路一：</h3>
+<blockquote>
+<p>先整个字符串整体翻转一次，然后再分别翻转每一个单词（或者先分别翻转每一个单词，然后再整个字符串整体翻转一次），此时就能得到我们需要的结果了。那么这里我们需要定义一些变量来辅助我们解题，storeIndex表示当前存储到的位置，n为字符串的长度。我们先给整个字符串反转一下，然后我们开始循环，遇到空格直接跳过，如果是非空格字符，我们此时看storeIndex是否为0，为0的话表示第一个单词，不用增加空格；如果不为0，说明不是第一个单词，需要在单词中间加一个空格，然后我们要找到下一个单词的结束位置我们用一个while循环来找下一个为空格的位置，在此过程中继续覆盖原字符串，找到结束位置了，下面就来翻转这个单词，然后更新i为结尾位置，最后遍历结束，我们剪裁原字符串到storeIndex位置，就可以得到我们需要的结果。</p>
+</blockquote>
+<pre><code>class Solution {
+public:
+    void reverseWords(string &amp;s) {
+        int storeIndex = 0, n = s.size();
+        reverse(s.begin(), s.end());
+        for (int i = 0; i &lt; n; ++i) {
+            if (s[i] != ' ') {
+                if (storeIndex != 0) s[storeIndex++] = ' ';
+                int j = i;
+                while (j &lt; n &amp;&amp; s[j] != ' ') s[storeIndex++] = s[j++];
+                reverse(s.begin() + storeIndex - (j - i), s.begin() + storeIndex);
+                i = j;
+            }
+        }
+        s.resize(storeIndex);
+    }
+};
+</code></pre>
+<hr>
+<h3 id="思路二">思路二：</h3>
+<blockquote>
+<p>使用字符串流类stringstream的解法，我们先把字符串装载入字符串流中，然后定义一个临时变量tmp，然后把第一个单词赋给s，这里需要注意的是，如果含有非空格字符，那么每次&gt;&gt;操作就会提取连在一起的非空格字符，那么我们每次将其加在s前面即可；如果原字符串为空，那么就不会进入while循环；如果原字符串为许多空格字符连在一起，那么第一个&gt;&gt;操作就会提取出这些空格字符放入s中，然后不进入while循环，这时候我们只要判断一下s的首字符是否为空格字符，是的话就将s清空即可。</p>
+</blockquote>
+<pre><code>class Solution {
+public:
+    void reverseWords(string &amp;s) {
+        istringstream is(s);
+        string tmp;
+        is &gt;&gt; s;
+        while(is &gt;&gt; tmp) s = tmp + &quot; &quot; + s;
+        if(!s.empty() &amp;&amp; s[0] == ' ') s = &quot;&quot;;
+    }
+};
+</code></pre>
+<hr>
+<h3 id="思路三">思路三：</h3>
+<blockquote>
+<p>下面这种方法也是使用stringstream来做，但是我们使用了getline来做，第三个参数是设定分隔字符，我们用空格字符来分隔，这个跟上面的&gt;&gt;操作是有不同的，每次只能过一个空格字符，如果有多个空格字符连在一起，那么t会赋值为空字符串，所以我们在处理t的时候首先要判断其是否为空，是的话直接跳过。</p>
+</blockquote>
+<pre><code>class Solution {
+public:
+    void reverseWords(string &amp;s) {
+        istringstream is(s);
+        s = &quot;&quot;;
+        string t = &quot;&quot;;
+        while (getline(is, t, ' ')) {
+            if (t.empty()) continue;
+            s = (s.empty() ? t : (t + &quot; &quot; + s));
+        }
+    }
+};
+</code></pre>
+<hr>
+<h4 id="参考来源">参考来源：</h4>
+<ul>
+<li><a href="http://www.cnblogs.com/grandyang/p/4606676.html">http://www.cnblogs.com/grandyang/p/4606676.html</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[String to Integer (atoi)]]></title>
+        <id>https://ama-non.github.io/post/string-to-integer-atoi</id>
+        <link href="https://ama-non.github.io/post/string-to-integer-atoi">
+        </link>
+        <updated>2019-05-14T03:02:25.000Z</updated>
+        <content type="html"><![CDATA[<p>Implement atoi to convert a string to an integer.</p>
+<p><strong>Hint:</strong> Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.</p>
+<p><strong>Notes:</strong> It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.</p>
+<p><strong>Requirements for atoi:</strong></p>
+<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;42&quot;<br>
+<strong>Output:</strong> 42</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;   -42&quot;<br><br>
+<strong>Output:</strong> 42<br>
+<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.
+Then take as many numerical digits as possible, which gets 42.</p>
+<p><strong>Example 3:</strong><br>
+<strong>Input:</strong> &quot;words and 987&quot;<br><br>
+<strong>Output:</strong> 0<br>
+<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical
+digit or a +/- sign. Therefore no valid conversion could be performed.</p>
+<p><strong>Example 4:</strong><br><br>
+<strong>Input:</strong> &quot;4193 with words&quot;<br>
+<strong>Output:</strong> 4193<br>
+<strong>Explanation:</strong> Conversion stops at digit '3' as the next character is not a numerical digit.</p>
+<p><strong>Example 5:</strong><br>
+<strong>Input:</strong> &quot;-91283472332&quot;<br>
+<strong>Output:</strong> -2147483648<br>
+<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.
+Thefore INT_MIN (−2^31) is returned.</p>
+<hr>
+<h3 id="思路">思路</h3>
+<blockquote>
+<p>细节题。注意以下的测试用例</p>
+<ul>
+<li>不规则输入</li>
+</ul>
+<ul>
+<li>无效格式</li>
+</ul>
+<ul>
+<li>溢出数据</li>
+</ul>
+</blockquote>
+<pre><code>class Solution {
+public:
+    int myAtoi(const string &amp;str) {
+        int num = 0;
+        int sign = 1;
+        const int n = str.length();
+        if (n == 0) return 0;
+
+        int i = 0;
+        while (str[i] == ' ' &amp;&amp; i &lt; n) i++;
+
+        if (str[i] == '+') {
+            i++;
+        } else if (str[i] == '-') {
+            sign = -1;
+            i++;
+        }
+
+        for (; i &lt; n; i++) {
+            if (str[i] &lt; '0' || str[i] &gt; '9')
+                break;
+            if (num &gt; INT_MAX / 10 ||
+                            (num == INT_MAX / 10 &amp;&amp;
+                                    (str[i] - '0') &gt; INT_MAX % 10)) {
+                return sign == -1 ? INT_MIN : INT_MAX;
+            }
+            num = num * 10 + (str[i] - '0');
+        }
+        return num * sign;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/atoi.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/atoi.html</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Longest Substring Without Repeating Characters]]></title>
+        <id>https://ama-non.github.io/post/longest-substring-without-repeating-characters</id>
+        <link href="https://ama-non.github.io/post/longest-substring-without-repeating-characters">
+        </link>
+        <updated>2019-05-14T02:44:11.000Z</updated>
+        <content type="html"><![CDATA[<p>Given a string, find the length of the longest substring without repeating characters.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;abcabcbb&quot;<br>
+<strong>Output:</strong> 3<br>
+<strong>Explanation:</strong> The answer is &quot;abc&quot;, with the length of 3.</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;bbbbb&quot;<br>
+<strong>Output:</strong> 1<br>
+<strong>Explanation:</strong> The answer is &quot;b&quot;, with the length of 1.</p>
+<p><strong>Example 3:</strong><br>
+<strong>Input:</strong> &quot;&quot;pwwkew&quot;&quot;<br>
+<strong>Output:</strong> 3<br>
+<strong>Explanation:</strong> The answer is &quot;wke&quot;, with the length of 3.
+Note that the answer must be a substring, &quot;pwke&quot; is a subsequence and not a substring.</p>
+<hr>
+<h3 id="思路贪心法c">思路：贪心法(C++)</h3>
+<blockquote>
+<p>假设子串里含有重复字符，则父串一定含有重复字符，单个子问题就可以决定父问题，因此可以用贪心法。跟动规不同，动规里，单个子问题只能影响父问题，不足以决定父问题。
+从左往右扫描，当遇到重复字母时，以上一个重复字母的index+1，作为新的搜索起始位置，直到最后一个字母，复杂度是O(n)。如下图所示。</p>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/images/longest-substring-without-repeating-characters.png">
+   <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+   display: inline-block;
+   color: #999;
+   padding: 2px;">不含重复字符的最长子串</div>
+</center> 
+</blockquote>
+<br>
+<pre><code>class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        const int ASCII_MAX = 255;
+        int last[ASCII_MAX]; // 记录字符上次出现过的位置
+        int start = 0; // 记录当前子串的起始位置
+
+        fill(last, last + ASCII_MAX, -1); // 0也是有效位置，因此初始化为-1
+        int max_len = 0;
+        for (int i = 0; i &lt; s.size(); i++) {
+            if (last[s[i]] &gt;= start) {
+                max_len = max(i - start, max_len);
+                start = last[s[i]] + 1;
+            }
+            last[s[i]] = i;
+        }
+        return max((int)s.size() - start, max_len);  // 别忘了最后一次，例如&quot;abcd&quot;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/greedy/longest-substring-without-repeating-characters.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/greedy/longest-substring-without-repeating-characters.html</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Longest Palindromic Substring]]></title>
+        <id>https://ama-non.github.io/post/longest-palindromic-substring</id>
+        <link href="https://ama-non.github.io/post/longest-palindromic-substring">
+        </link>
+        <updated>2019-05-14T01:50:06.000Z</updated>
+        <content type="html"><![CDATA[<p>Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.</p>
+<p><strong>Example 1:</strong><br>
+<strong>Input:</strong> &quot;babad&quot;<br>
+<strong>Output:</strong> &quot;bab&quot;<br>
+<strong>Note:</strong> &quot;aba&quot; is also a valid answer.</p>
+<p><strong>Example 2:</strong><br>
+<strong>Input:</strong> &quot;cbbd&quot;<br>
+<strong>Output:</strong> &quot;bb&quot;</p>
+<hr>
+<h3 id="思路一动态规划c">思路一：动态规划(C++)</h3>
+<blockquote>
+<p>维护一个二维数组dp，其中dp[i][j]表示字符串区间[i, j]是否为回文串，当i = j时，只有一个字符，肯定是回文串，如果i = j + 1，说明是相邻字符，此时需要判断s[i]是否等于s[j]，如果i和j不相邻，即i - j &gt;= 2时，除了判断s[i]和s[j]相等之外，dp[j + 1][i - 1]若为真，就是回文串</p>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://ws4.sinaimg.cn/large/006tKfTcly1g1gdgp1gn6j30vy07awf5.jpg">
+   <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+   display: inline-block;
+   color: #999;
+   padding: 2px;">动态规划</div>
+</center> 
+</blockquote>
+<br>
+<pre><code>class Solution {
+public:
+    string longestPalindrome(const string&amp; s) {
+        if (s.size() == 0) return &quot;&quot;;
+        const int n = s.size();
+        bool f[n][n];
+        fill_n(&amp;f[0][0], n*n, false);
+        
+        size_t max_len = 1, start = 0;
+        
+        for (size_t i = 0; i &lt; s.size(); i++) {
+            f[i][i] = true; 
+            for (size_t j = 0; j &lt; i; j++) {
+                f[j][i] = (s[j] == s[i] &amp;&amp; (i - j &lt; 2 || f[j + 1][i - 1]));
+                if (f[j][i] &amp;&amp; max_len &lt; (i - j + 1)) {
+                    max_len = i - j + 1;
+                    start = j;
+                }
+            }
+        }
+        return s.substr(start, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n^2),空间复杂度o(n^2)</em></p>
+<hr>
+<h3 id="思路2扩展中心c">思路2：扩展中心(C++)</h3>
+<blockquote>
+<center>
+  <img style="border-radius: 0.3125em;
+   box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="http://windliang.oss-cn-beijing.aliyuncs.com/5_6.jpg">
+   <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+   display: inline-block;
+   color: #999;
+   padding: 2px;">扩展中心</div>
+</center> <br>
+我们知道回文串一定是对称的，所以我们可以每次循环选择一个中心，进行左右扩展，判断左右字符是否相等即可。由于存在奇数的字符串和偶数的字符串，所以我们需要从一个字符开始扩展，或者从两个字符之间开始扩展，所以总共有 n + n - 1 个中心。
+</blockquote>
+<pre><code>class Solution {
+public:
+    std::string longestPalindrome(std::string s) {
+        if (s.size() &lt; 2)
+            return s;
+        int len = s.size(), max_left = 0, max_len = 1, left, right;
+        for (int start = 0; start &lt; len &amp;&amp; len - start &gt; max_len / 2;) {
+            left = right = start;
+            while (right &lt; len - 1 &amp;&amp; s[right + 1] == s[right])
+                ++right;
+            start = right + 1;
+            while (right &lt; len - 1 &amp;&amp; left &gt; 0 &amp;&amp; s[right + 1] == s[left - 1]) {
+                ++right;
+                --left;
+            }
+            if (max_len &lt; right - left + 1) {
+                max_left = left;
+                max_len = right - left + 1;
+            }
+        }
+        return s.substr(max_left, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n^2),空间复杂度o(1)</em></p>
+<hr>
+<h3 id="思路3manachers-algorithmc">思路3：Manacher’s Algorithm(C++)</h3>
+<blockquote>
+<p><a href="http://www.cnblogs.com/grandyang/p/4475985.html">算法解析</a></p>
+</blockquote>
+<pre><code>class Solution {
+public:
+    // Transform S into T.
+    // For example, S = &quot;abba&quot;, T = &quot;^#a#b#b#a#$&quot;.
+    // ^ and $ signs are sentinels appended to each end to avoid bounds checking
+    string preProcess(const string&amp; s) {
+        int n = s.length();
+        if (n == 0) return &quot;^$&quot;;
+
+        string ret = &quot;^&quot;;
+        for (int i = 0; i &lt; n; i++) ret += &quot;#&quot; + s.substr(i, 1);
+
+        ret += &quot;#$&quot;;
+        return ret;
+    }
+
+    string longestPalindrome(string s) {
+        string T = preProcess(s);
+        const int n = T.length();
+        // 以T[i]为中心，向左/右扩张的长度，不包含T[i]自己，
+        // 因此 P[i]是源字符串中回文串的长度
+        int P[n];
+        int C = 0, R = 0;
+
+        for (int i = 1; i &lt; n - 1; i++) {
+            int i_mirror = 2 * C - i; // equals to i' = C - (i-C)
+
+            P[i] = (R &gt; i) ? min(R - i, P[i_mirror]) : 0;
+
+            // Attempt to expand palindrome centered at i
+            while (T[i + 1 + P[i]] == T[i - 1 - P[i]])
+                P[i]++;
+
+            // If palindrome centered at i expand past R,
+            // adjust center based on expanded palindrome.
+            if (i + P[i] &gt; R) {
+                C = i;
+                R = i + P[i];
+            }
+        }
+
+        // Find the maximum element in P.
+        int max_len = 0;
+        int center_index = 0;
+        for (int i = 1; i &lt; n - 1; i++) {
+            if (P[i] &gt; max_len) {
+                max_len = P[i];
+                center_index = i;
+            }
+        }
+
+        return s.substr((center_index - 1 - max_len) / 2, max_len);
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n)，空间复杂度o(n)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/longest-palindromic-substring.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/string/longest-palindromic-substring.html</a></li>
+</ul>
+<ul>
+<li><a href="https://www.cnblogs.com/grandyang/p/4464476.html">https://www.cnblogs.com/grandyang/p/4464476.html</a></li>
+</ul>
+<ul>
+<li><a href="http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/">http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Single Number III]]></title>
+        <id>https://ama-non.github.io/post/single-number-iii</id>
+        <link href="https://ama-non.github.io/post/single-number-iii">
+        </link>
+        <updated>2019-05-13T12:38:29.000Z</updated>
+        <content type="html"><![CDATA[<p>Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.</p>
+<p><strong>Example:</strong></p>
+<p><strong>Input:</strong>  [1,2,1,3,2,5]<br>
+<strong>Output:</strong> [3,5]</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>The order of the result is not important. So in the above example, [5, 3] is also correct.</li>
+</ul>
+<ul>
+<li>Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?</li>
+</ul>
+<hr>
+<h3 id="分析">分析：</h3>
+<blockquote>
+<p>本题是有两个未知数，是 &quot;Single Number&quot; 这道题的扩展，直接做异或肯定是不行的。有没有办法把两个未知数分开，使得可以应用Single Number 的解法呢？
+设x, y是那两个未知数，那么如果对这个数组做异或的话，结果实质上等于x ^ y，因为其他数都出现了两次，被抵消了。
+但是仅仅是通过最后异或出来的值，是没办法区分出x和y的，但是足以帮助我们把x和y划分到不停地子数组中去。对于x和y，由于二者不相等，那么二者至少存在一位不相同。</p>
+<center>
+  <img style="border-radius: 0.3125em;
+  box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+  src="https://ws1.sinaimg.cn/large/006tNc79ly1g21brkonyaj306503ja9z.jpg">
+</center> 
+<br>
+当找到这个k以后，就可以按照第k位是否等于1，将nums数组划分为两个子数组，然后把Single Number的算法直接应用到两个子数组上，就可以求出x和y了。
+</blockquote>
+<pre><code>vector&lt;int&gt; singleNumber(vector&lt;int&gt;&amp; nums) {
+    int aXorb = 0;  // the result of a xor b;
+    for (auto item : nums) aXorb ^= item;
+    int lastBit = (aXorb &amp; (aXorb - 1)) ^ aXorb;  // the last bit that a diffs b
+    int intA = 0, intB = 0;
+    for (auto item : nums) {
+        // based on the last bit, group the items into groupA(include a) and groupB
+        if (item &amp; lastBit) intA = intA ^ item;
+        else intB = intB ^ item;
+    }
+    return vector&lt;int&gt;{intA, intB};   
+}
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html</a></li>
+</ul>
+<ul>
+<li><a href="https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation">https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Single Number II]]></title>
+        <id>https://ama-non.github.io/post/single-number-ii</id>
+        <link href="https://ama-non.github.io/post/single-number-ii">
+        </link>
+        <updated>2019-05-13T12:37:55.000Z</updated>
+        <content type="html"><![CDATA[<p>Given a <strong>non-empty</strong> array of integers, every element appears three times except for one, which appears exactly once. Find that single one.</p>
+<p><strong>Note:</strong></p>
+<p>Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> [2,2,3,2]<br>
+<strong>Output:</strong> 3</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> [0,1,0,1,0,1,99]<br>
+<strong>Output:</strong> 99</p>
+<hr>
+<h3 id="分析">分析：</h3>
+<blockquote>
+<p>本题和上一题 Single Number，考察的是位运算。</p>
+<ul>
+<li>方法1：创建一个长度为sizeof(int)的数组count[sizeof(int)]，count[i]表示在在i位出现的1的次数。如果count[i]是3的整数倍，则忽略；否则就把该位取出来组成答案。</li>
+</ul>
+<ul>
+<li>方法2：<strong>用one记录到当前处理的元素为止，二进制1出现“1次”（mod 3 之后的 1）的有哪些二进制位；用two记录到当前计算的变量为止，二进制1出现“2次”（mod 3 之后的 2）的有哪些二进制位。当one和two中的某一位同时为1时表示该二进制位上1出现了3次，此时需要清零。即用二进制模拟三进制运算。最终one记录的是最终结果。</strong>
+假设现在有一个数字1，那么我们更新one的方法就是‘亦或’这个1，则one就变成了1，而two的更新方法是用上一个状态下的one去‘与’上数字1，然后‘或’上这个结果，这样假如之前one是1，那么此时two也会变成1，这make sense，因为说明是当前位遇到两个1了；反之如果之前one是0，那么现在two也就是0。注意更新的顺序是先更新two，再更新one，不理解的话只要带个只有一个数字1的输入数组看一下就不难理解了。然后我们更新three，如果此时one和two都是1了，那么由于我们先更新的two，再更新的one，two为1，说明此时至少有两个数字1了，而此时one为1，说明了此时已经有了三个数字1，这块要仔细想清楚，因为one是要‘亦或’一个1的，值能为1，说明之前one为0，实际情况是，当第二个1来的时候，two先更新为1，此时one再更新为0，下面three就是0了，那么‘与’上three的相反数1不会改变one和two的值；那么当第三个1来的时候，two还是1，此时one就更新为1了，那么three就更新为1了，此时就要清空one和two了，让它们‘与’上three的相反数0即可，最终结果将会保存在one中，</li>
+</ul>
+</blockquote>
+<h3 id="方法一">方法一：</h3>
+<pre><code>class Solution {
+public:
+    int singleNumber(vector&lt;int&gt;&amp; nums) {
+        const int W = sizeof(int) * 8; // 一个整数的bit数，即整数字长
+        int count[W];  // count[i]表示在在i位出现的1的次数
+        fill_n(&amp;count[0], W, 0);
+        for (int i = 0; i &lt; nums.size(); i++) {
+            for (int j = 0; j &lt; W; j++) {
+                count[j] += (nums[i] &gt;&gt; j) &amp; 1;
+                count[j] %= 3;
+            }
+        }
+        int result = 0;
+        for (int i = 0; i &lt; W; i++) {
+            result += (count[i] &lt;&lt; i);
+        }
+        return result;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<h3 id="方法2">方法2：</h3>
+<pre><code>class Solution {
+public:
+    int singleNumber(vector&lt;int&gt;&amp; nums) {
+        int one = 0, two = 0, three = 0;
+        for (int i : nums) {
+            two |= (one &amp; i);
+            one ^= i;
+            three = ~(one &amp; two);
+            one &amp;= three;
+            two &amp;= three;
+        }
+
+        return one;
+    }
+};
+</code></pre>
+<p><em>时间复杂度o(n),空间复杂度o(1)</em></p>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<ul>
+<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-ii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-ii.html</a></li>
+</ul>
+<ul>
+<li><a href="https://www.cnblogs.com/grandyang/p/4263927.html">https://www.cnblogs.com/grandyang/p/4263927.html</a></li>
+</ul>
+]]></content>
+    </entry>
+</feed>
