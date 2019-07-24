@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Longest Substring Without Repeating Characters | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1563961822810">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1563961822810" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -95,23 +95,23 @@
             
             <div class="post-content">
               <p>Given a string, find the length of the longest substring without repeating characters.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;abcabcbb&quot;<br>
-<strong>Output:</strong> 3<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;abcabcbb&quot;<br><br>
+<strong>Output:</strong> 3<br><br>
 <strong>Explanation:</strong> The answer is &quot;abc&quot;, with the length of 3.</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;bbbbb&quot;<br>
-<strong>Output:</strong> 1<br>
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;bbbbb&quot;<br><br>
+<strong>Output:</strong> 1<br><br>
 <strong>Explanation:</strong> The answer is &quot;b&quot;, with the length of 1.</p>
-<p><strong>Example 3:</strong><br>
-<strong>Input:</strong> &quot;&quot;pwwkew&quot;&quot;<br>
-<strong>Output:</strong> 3<br>
-<strong>Explanation:</strong> The answer is &quot;wke&quot;, with the length of 3.
+<p><strong>Example 3:</strong><br><br>
+<strong>Input:</strong> &quot;&quot;pwwkew&quot;&quot;<br><br>
+<strong>Output:</strong> 3<br><br>
+<strong>Explanation:</strong> The answer is &quot;wke&quot;, with the length of 3.<br>
 Note that the answer must be a substring, &quot;pwke&quot; is a subsequence and not a substring.</p>
 <hr>
 <h3 id="思路贪心法c">思路：贪心法(C++)</h3>
 <blockquote>
-<p>假设子串里含有重复字符，则父串一定含有重复字符，单个子问题就可以决定父问题，因此可以用贪心法。跟动规不同，动规里，单个子问题只能影响父问题，不足以决定父问题。
+<p>假设子串里含有重复字符，则父串一定含有重复字符，单个子问题就可以决定父问题，因此可以用贪心法。跟动规不同，动规里，单个子问题只能影响父问题，不足以决定父问题。<br>
 从左往右扫描，当遇到重复字母时，以上一个重复字母的index+1，作为新的搜索起始位置，直到最后一个字母，复杂度是O(n)。如下图所示。</p>
 <center>
   <img style="border-radius: 0.3125em;

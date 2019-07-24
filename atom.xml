@@ -2,13 +2,64 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ama-non.github.io</id>
     <title>ama-non</title>
-    <updated>2019-05-28T16:14:42.023Z</updated>
+    <updated>2019-07-24T09:51:57.187Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ama-non.github.io"/>
     <link rel="self" href="https://ama-non.github.io/atom.xml"/>
     <logo>https://ama-non.github.io/images/avatar.png</logo>
     <icon>https://ama-non.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, ama-non</rights>
+    <entry>
+        <title type="html"><![CDATA[Reverse Linked List II]]></title>
+        <id>https://ama-non.github.io/post/reverse-linked-list-ii</id>
+        <link href="https://ama-non.github.io/post/reverse-linked-list-ii">
+        </link>
+        <updated>2019-07-24T09:09:36.000Z</updated>
+        <content type="html"><![CDATA[<p>Reverse a linked list from position m to n. Do it in one-pass.</p>
+<p>Note: 1 ≤ m ≤ n ≤ length of list.</p>
+<p>Example:</p>
+<p>Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4<br>
+Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL</p>
+<hr>
+<h2 id="分析">分析：</h2>
+<p>首先需要找到待反转的子序列，然后对子序列进行<strong>n-m</strong>次反转。<br>
+反转过程如下（<font color=red>prev</font> <font color=blue>cur</font>）：<br>
+反转前：1-&gt;<font color=red>2</font>-&gt;<font color=blue>3</font>-&gt;4-&gt;5-&gt;NULL<br>
+第1次：1-&gt;3-&gt;<font color=red>2</font>-&gt;<font color=blue>4</font>-&gt;5-&gt;NULL<br>
+第2次：1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL<br>
+从过程中我们可以看出第1次置换了2和3的位置，此时2和3在序列中已经反转，那么在第2次只需要将4放到子序列的头部即可，同理，如果n = 5的话，此时2，3，4在序列中已经反转，下一次反转只需要将5放到子序列的头部即可。<br>
+简单来讲，就是在每次反转中<font color=blue>cur</font>之前的序列已经反转，然后将<font color=blue>cur</font>置于子序列的头部来完成下一次反转。</p>
+<pre><code class="language-c++">// Reverse Linked List II
+// 迭代版，时间复杂度O(n)，空间复杂度O(1)
+class Solution {
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        ListNode dummy(-1);
+        dummy.next = head;
+
+        ListNode *prev = &amp;dummy;
+        for (int i = 0; i &lt; m-1; ++i)
+            prev = prev-&gt;next;
+        ListNode* const head2 = prev;
+
+        prev = head2-&gt;next;
+        ListNode *cur = prev-&gt;next;
+        for (int i = m; i &lt; n; ++i) {
+            prev-&gt;next = cur-&gt;next;
+            cur-&gt;next = head2-&gt;next;
+            head2-&gt;next = cur;  // 头插法
+            cur = prev-&gt;next;
+        }
+
+        return dummy.next;
+    }
+};
+</code></pre>
+<hr>
+<h5 id="参考来源">参考来源：</h5>
+<p><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list-ii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/linear-list/linked-list/reverse-linked-list-ii.html</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Serialize and Deserialize Binary Tree]]></title>
         <id>https://ama-non.github.io/post/serialize-and-deserialize-binary-tree</id>
@@ -163,7 +214,7 @@ public:
         <link href="https://ama-non.github.io/post/hai-zi-men-de-you-xi-yuan-quan-zhong-zui-hou-sheng-xia-de-shu">
         </link>
         <updated>2019-05-24T13:53:58.000Z</updated>
-        <content type="html"><![CDATA[<p>每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)</p>
+        <content type="html"><![CDATA[<p>每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!<sup>_</sup>)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)</p>
 <hr>
 <h3 id="分析">分析：</h3>
 <h4 id="方法一">方法一：</h4>
@@ -310,7 +361,7 @@ public:
         <link href="https://ama-non.github.io/post/zheng-shu-zhong-1-chu-xian-de-ci-shu-cong-1-dao-n-zheng-shu-zhong-1-chu-xian-de-ci-shu">
         </link>
         <updated>2019-05-21T12:23:03.000Z</updated>
-        <content type="html"><![CDATA[<p>求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1 到 n 中1出现的次数）。</p>
+        <content type="html"><![CDATA[<p>求出1<sub>13的整数中1出现的次数,并算出100</sub>1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1 到 n 中1出现的次数）。</p>
 <hr>
 <h3 id="分析">分析：</h3>
 <p>像类似这样的问题，我们可以通过归纳总结来获取相关的东西。</p>
@@ -389,8 +440,8 @@ public:
         </link>
         <updated>2019-05-14T07:46:05.000Z</updated>
         <content type="html"><![CDATA[<p>用C++写一个函数, 如 Foo(const char *str), 打印出 str 的全排列,</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;abc&quot;<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;abc&quot;<br><br>
 <strong>Output:</strong> &quot;abc, acb, bca, dac, cab, cba&quot;</p>
 <hr>
 <h3 id="思路一非去重递归实现c语言">思路一：非去重递归实现(C语言)</h3>
@@ -451,8 +502,8 @@ int main()
 <hr>
 <p>###思路二：去重递归实现</p>
 <blockquote>
-<p>由于全排列就是从第一个数字起每个数分别与它后面的数字交换。我们先尝试加个这样的判断——如果一个数与后面的数字相同那么这二个数就不交换了。如122，第一个数与后面交换得212、221。然后122中第二数就不用与第三个数交换了，但对212，它第二个数与第三个数是不相同的，交换之后得到221。与由122中第一个数与第三个数交换所得的221重复了。所以这个方法不行。
-换种思维，对122，第一个数1与第二个数2交换得到212，然后考虑第一个数1与第三个数2交换，此时由于第三个数等于第二个数，所以第一个数不再与第三个数交换。再考虑212，它的第二个数与第三个数交换可以得到解决221。此时全排列生成完毕。
+<p>由于全排列就是从第一个数字起每个数分别与它后面的数字交换。我们先尝试加个这样的判断——如果一个数与后面的数字相同那么这二个数就不交换了。如122，第一个数与后面交换得212、221。然后122中第二数就不用与第三个数交换了，但对212，它第二个数与第三个数是不相同的，交换之后得到221。与由122中第一个数与第三个数交换所得的221重复了。所以这个方法不行。<br>
+换种思维，对122，第一个数1与第二个数2交换得到212，然后考虑第一个数1与第三个数2交换，此时由于第三个数等于第二个数，所以第一个数不再与第三个数交换。再考虑212，它的第二个数与第三个数交换可以得到解决221。此时全排列生成完毕。<br>
 这样我们也得到了在全排列中去掉重复的规则——去重的全排列就是从第一个数字起每个数分别与它后面非重复出现的数字交换。用编程的话描述就是第i个数与第j个数交换时，要求[i,j)中没有与第j个数相等的数。</p>
 </blockquote>
 <pre><code>//去重全排列的递归实现
@@ -523,16 +574,16 @@ int main()
         </link>
         <updated>2019-05-14T03:22:09.000Z</updated>
         <content type="html"><![CDATA[<p>Given an input string, reverse the string word by word.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;the sky is blue&quot;<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;the sky is blue&quot;<br><br>
 <strong>Output:</strong> &quot;blue is sky the&quot;</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;  hello world!  &quot;<br>
-<strong>Output:</strong> &quot;world! hello&quot;<br>
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;  hello world!  &quot;<br><br>
+<strong>Output:</strong> &quot;world! hello&quot;<br><br>
 <strong>Explanation:</strong> Your reversed string should not contain leading or trailing spaces.</p>
-<p><strong>Example 3:</strong><br>
-<strong>Input:</strong> &quot;a good   example&quot;<br>
-<strong>Output:</strong> &quot;example good a&quot;<br>
+<p><strong>Example 3:</strong><br><br>
+<strong>Input:</strong> &quot;a good   example&quot;<br><br>
+<strong>Output:</strong> &quot;example good a&quot;<br><br>
 <strong>Explanation:</strong> You need to reduce multiple spaces between two words to a single space in the reversed string.</p>
 <p><strong>Note:</strong></p>
 <ul>
@@ -618,31 +669,31 @@ public:
 <p><strong>Hint:</strong> Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.</p>
 <p><strong>Notes:</strong> It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.</p>
 <p><strong>Requirements for atoi:</strong></p>
-<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
-The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
-If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.<br>
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.<br>
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.<br>
 If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;42&quot;<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;42&quot;<br><br>
 <strong>Output:</strong> 42</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;   -42&quot;<br><br>
-<strong>Output:</strong> 42<br>
-<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;   -42&quot;<br><br><br>
+<strong>Output:</strong> 42<br><br>
+<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.<br>
 Then take as many numerical digits as possible, which gets 42.</p>
-<p><strong>Example 3:</strong><br>
-<strong>Input:</strong> &quot;words and 987&quot;<br><br>
-<strong>Output:</strong> 0<br>
-<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical
+<p><strong>Example 3:</strong><br><br>
+<strong>Input:</strong> &quot;words and 987&quot;<br><br><br>
+<strong>Output:</strong> 0<br><br>
+<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical<br>
 digit or a +/- sign. Therefore no valid conversion could be performed.</p>
-<p><strong>Example 4:</strong><br><br>
-<strong>Input:</strong> &quot;4193 with words&quot;<br>
-<strong>Output:</strong> 4193<br>
+<p><strong>Example 4:</strong><br><br><br>
+<strong>Input:</strong> &quot;4193 with words&quot;<br><br>
+<strong>Output:</strong> 4193<br><br>
 <strong>Explanation:</strong> Conversion stops at digit '3' as the next character is not a numerical digit.</p>
-<p><strong>Example 5:</strong><br>
-<strong>Input:</strong> &quot;-91283472332&quot;<br>
-<strong>Output:</strong> -2147483648<br>
-<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.
+<p><strong>Example 5:</strong><br><br>
+<strong>Input:</strong> &quot;-91283472332&quot;<br><br>
+<strong>Output:</strong> -2147483648<br><br>
+<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.<br>
 Thefore INT_MIN (−2^31) is returned.</p>
 <hr>
 <h3 id="思路">思路</h3>
@@ -704,23 +755,23 @@ public:
         </link>
         <updated>2019-05-14T02:44:11.000Z</updated>
         <content type="html"><![CDATA[<p>Given a string, find the length of the longest substring without repeating characters.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;abcabcbb&quot;<br>
-<strong>Output:</strong> 3<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;abcabcbb&quot;<br><br>
+<strong>Output:</strong> 3<br><br>
 <strong>Explanation:</strong> The answer is &quot;abc&quot;, with the length of 3.</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;bbbbb&quot;<br>
-<strong>Output:</strong> 1<br>
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;bbbbb&quot;<br><br>
+<strong>Output:</strong> 1<br><br>
 <strong>Explanation:</strong> The answer is &quot;b&quot;, with the length of 1.</p>
-<p><strong>Example 3:</strong><br>
-<strong>Input:</strong> &quot;&quot;pwwkew&quot;&quot;<br>
-<strong>Output:</strong> 3<br>
-<strong>Explanation:</strong> The answer is &quot;wke&quot;, with the length of 3.
+<p><strong>Example 3:</strong><br><br>
+<strong>Input:</strong> &quot;&quot;pwwkew&quot;&quot;<br><br>
+<strong>Output:</strong> 3<br><br>
+<strong>Explanation:</strong> The answer is &quot;wke&quot;, with the length of 3.<br>
 Note that the answer must be a substring, &quot;pwke&quot; is a subsequence and not a substring.</p>
 <hr>
 <h3 id="思路贪心法c">思路：贪心法(C++)</h3>
 <blockquote>
-<p>假设子串里含有重复字符，则父串一定含有重复字符，单个子问题就可以决定父问题，因此可以用贪心法。跟动规不同，动规里，单个子问题只能影响父问题，不足以决定父问题。
+<p>假设子串里含有重复字符，则父串一定含有重复字符，单个子问题就可以决定父问题，因此可以用贪心法。跟动规不同，动规里，单个子问题只能影响父问题，不足以决定父问题。<br>
 从左往右扫描，当遇到重复字母时，以上一个重复字母的index+1，作为新的搜索起始位置，直到最后一个字母，复杂度是O(n)。如下图所示。</p>
 <center>
   <img style="border-radius: 0.3125em;
@@ -768,12 +819,12 @@ public:
         </link>
         <updated>2019-05-14T01:50:06.000Z</updated>
         <content type="html"><![CDATA[<p>Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;babad&quot;<br>
-<strong>Output:</strong> &quot;bab&quot;<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;babad&quot;<br><br>
+<strong>Output:</strong> &quot;bab&quot;<br><br>
 <strong>Note:</strong> &quot;aba&quot; is also a valid answer.</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;cbbd&quot;<br>
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;cbbd&quot;<br><br>
 <strong>Output:</strong> &quot;bb&quot;</p>
 <hr>
 <h3 id="思路一动态规划c">思路一：动态规划(C++)</h3>
@@ -814,7 +865,7 @@ public:
     }
 };
 </code></pre>
-<p><em>时间复杂度o(n^2),空间复杂度o(n^2)</em></p>
+<p><em>时间复杂度o(n<sup>2),空间复杂度o(n</sup>2)</em></p>
 <hr>
 <h3 id="思路2扩展中心c">思路2：扩展中心(C++)</h3>
 <blockquote>
@@ -925,60 +976,6 @@ public:
 </ul>
 <ul>
 <li><a href="http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/">http://windliang.cc/2018/08/05/leetCode-5-Longest-Palindromic-Substring/</a></li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Single Number III]]></title>
-        <id>https://ama-non.github.io/post/single-number-iii</id>
-        <link href="https://ama-non.github.io/post/single-number-iii">
-        </link>
-        <updated>2019-05-13T12:38:29.000Z</updated>
-        <content type="html"><![CDATA[<p>Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.</p>
-<p><strong>Example:</strong></p>
-<p><strong>Input:</strong>  [1,2,1,3,2,5]<br>
-<strong>Output:</strong> [3,5]</p>
-<p><strong>Note:</strong></p>
-<ul>
-<li>The order of the result is not important. So in the above example, [5, 3] is also correct.</li>
-</ul>
-<ul>
-<li>Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?</li>
-</ul>
-<hr>
-<h3 id="分析">分析：</h3>
-<blockquote>
-<p>本题是有两个未知数，是 &quot;Single Number&quot; 这道题的扩展，直接做异或肯定是不行的。有没有办法把两个未知数分开，使得可以应用Single Number 的解法呢？
-设x, y是那两个未知数，那么如果对这个数组做异或的话，结果实质上等于x ^ y，因为其他数都出现了两次，被抵消了。
-但是仅仅是通过最后异或出来的值，是没办法区分出x和y的，但是足以帮助我们把x和y划分到不停地子数组中去。对于x和y，由于二者不相等，那么二者至少存在一位不相同。</p>
-<center>
-  <img style="border-radius: 0.3125em;
-  box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-  src="https://ws1.sinaimg.cn/large/006tNc79ly1g21brkonyaj306503ja9z.jpg">
-</center> 
-<br>
-当找到这个k以后，就可以按照第k位是否等于1，将nums数组划分为两个子数组，然后把Single Number的算法直接应用到两个子数组上，就可以求出x和y了。
-</blockquote>
-<pre><code>vector&lt;int&gt; singleNumber(vector&lt;int&gt;&amp; nums) {
-    int aXorb = 0;  // the result of a xor b;
-    for (auto item : nums) aXorb ^= item;
-    int lastBit = (aXorb &amp; (aXorb - 1)) ^ aXorb;  // the last bit that a diffs b
-    int intA = 0, intB = 0;
-    for (auto item : nums) {
-        // based on the last bit, group the items into groupA(include a) and groupB
-        if (item &amp; lastBit) intA = intA ^ item;
-        else intB = intB ^ item;
-    }
-    return vector&lt;int&gt;{intA, intB};   
-}
-</code></pre>
-<hr>
-<h5 id="参考来源">参考来源：</h5>
-<ul>
-<li><a href="https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html">https://soulmachine.gitbooks.io/algorithm-essentials/content/cpp/bitwise-operations/single-number-iii.html</a></li>
-</ul>
-<ul>
-<li><a href="https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation">https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation</a></li>
 </ul>
 ]]></content>
     </entry>

@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>String to Integer (atoi) | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1563961822810">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1563961822810" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -98,31 +98,31 @@
 <p><strong>Hint:</strong> Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.</p>
 <p><strong>Notes:</strong> It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.</p>
 <p><strong>Requirements for atoi:</strong></p>
-<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
-The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
-If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.<br>
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.<br>
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.<br>
 If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> &quot;42&quot;<br>
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> &quot;42&quot;<br><br>
 <strong>Output:</strong> 42</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> &quot;   -42&quot;<br><br>
-<strong>Output:</strong> 42<br>
-<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> &quot;   -42&quot;<br><br><br>
+<strong>Output:</strong> 42<br><br>
+<strong>Explanation:</strong> The first non-whitespace character is '-', which is the minus sign.<br>
 Then take as many numerical digits as possible, which gets 42.</p>
-<p><strong>Example 3:</strong><br>
-<strong>Input:</strong> &quot;words and 987&quot;<br><br>
-<strong>Output:</strong> 0<br>
-<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical
+<p><strong>Example 3:</strong><br><br>
+<strong>Input:</strong> &quot;words and 987&quot;<br><br><br>
+<strong>Output:</strong> 0<br><br>
+<strong>Explanation:</strong> The first non-whitespace character is 'w', which is not a numerical<br>
 digit or a +/- sign. Therefore no valid conversion could be performed.</p>
-<p><strong>Example 4:</strong><br><br>
-<strong>Input:</strong> &quot;4193 with words&quot;<br>
-<strong>Output:</strong> 4193<br>
+<p><strong>Example 4:</strong><br><br><br>
+<strong>Input:</strong> &quot;4193 with words&quot;<br><br>
+<strong>Output:</strong> 4193<br><br>
 <strong>Explanation:</strong> Conversion stops at digit '3' as the next character is not a numerical digit.</p>
-<p><strong>Example 5:</strong><br>
-<strong>Input:</strong> &quot;-91283472332&quot;<br>
-<strong>Output:</strong> -2147483648<br>
-<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.
+<p><strong>Example 5:</strong><br><br>
+<strong>Input:</strong> &quot;-91283472332&quot;<br><br>
+<strong>Output:</strong> -2147483648<br><br>
+<strong>Explanation:</strong> The number &quot;-91283472332&quot; is out of the range of a 32-bit signed integer.<br>
 Thefore INT_MIN (−2^31) is returned.</p>
 <hr>
 <h3 id="思路">思路</h3>

@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Single Number III | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1563961822810">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1563961822810" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -96,7 +96,7 @@
             <div class="post-content">
               <p>Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.</p>
 <p><strong>Example:</strong></p>
-<p><strong>Input:</strong>  [1,2,1,3,2,5]<br>
+<p><strong>Input:</strong>  [1,2,1,3,2,5]<br><br>
 <strong>Output:</strong> [3,5]</p>
 <p><strong>Note:</strong></p>
 <ul>
@@ -108,8 +108,8 @@
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p>本题是有两个未知数，是 &quot;Single Number&quot; 这道题的扩展，直接做异或肯定是不行的。有没有办法把两个未知数分开，使得可以应用Single Number 的解法呢？
-设x, y是那两个未知数，那么如果对这个数组做异或的话，结果实质上等于x ^ y，因为其他数都出现了两次，被抵消了。
+<p>本题是有两个未知数，是 &quot;Single Number&quot; 这道题的扩展，直接做异或肯定是不行的。有没有办法把两个未知数分开，使得可以应用Single Number 的解法呢？<br>
+设x, y是那两个未知数，那么如果对这个数组做异或的话，结果实质上等于x ^ y，因为其他数都出现了两次，被抵消了。<br>
 但是仅仅是通过最后异或出来的值，是没办法区分出x和y的，但是足以帮助我们把x和y划分到不停地子数组中去。对于x和y，由于二者不相等，那么二者至少存在一位不相同。</p>
 <center>
   <img style="border-radius: 0.3125em;

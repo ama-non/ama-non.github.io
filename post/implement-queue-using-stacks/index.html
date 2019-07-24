@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Implement Queue using Stacks | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1563961822810">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1563961822810" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -109,10 +109,10 @@
 </ul>
 <p><strong>Example:</strong></p>
 <p>MyQueue queue = new MyQueue();</p>
-<p>queue.push(1);
+<p>queue.push(1);<br>
 queue.push(2);<br>
-queue.peek();  // returns 1
-queue.pop();   // returns 1
+queue.peek();  // returns 1<br>
+queue.pop();   // returns 1<br>
 queue.empty(); // returns false</p>
 <p><strong>Notes:</strong></p>
 <ul>
@@ -127,16 +127,16 @@ queue.empty(); // returns false</p>
 <hr>
 <h3 id="分析">分析：</h3>
 <blockquote>
-<p>The idea behind using two stacks is simple. Whenever you enqueue an element, it goes in the <strong>right</strong> stack.
-When you need to dequeue an element, you reverse the right stack and place it in the <strong>left</strong> stack so that you can retrieve the elements using FIFO order.<br>
-<strong>empty():</strong>
-To check if the queue is empty, simply check that both the left and right stack are empty. This means that there &gt;are no elements left to dequeue and no new elements have been enqueued.<br>
-<strong>peek():</strong>
-If the left stack is not empty, the element on top of this stack is at the front of the queue.
-If the left stack is empty, the right stack will be reversed and placed in the left stack.<br>
-<strong>enqueue():</strong>
-Recall that the right stack is used to enqueue elements.<br>
-<strong>dequeue():</strong>
+<p>The idea behind using two stacks is simple. Whenever you enqueue an element, it goes in the <strong>right</strong> stack.<br>
+When you need to dequeue an element, you reverse the right stack and place it in the <strong>left</strong> stack so that you can retrieve the elements using FIFO order.<br><br>
+<strong>empty():</strong><br>
+To check if the queue is empty, simply check that both the left and right stack are empty. This means that there &gt;are no elements left to dequeue and no new elements have been enqueued.<br><br>
+<strong>peek():</strong><br>
+If the left stack is not empty, the element on top of this stack is at the front of the queue.<br>
+If the left stack is empty, the right stack will be reversed and placed in the left stack.<br><br>
+<strong>enqueue():</strong><br>
+Recall that the right stack is used to enqueue elements.<br><br>
+<strong>dequeue():</strong><br>
 Remove the top of the left stack.</p>
 </blockquote>
 <pre><code>class MyQueue {

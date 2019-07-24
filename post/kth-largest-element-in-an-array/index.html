@@ -4,7 +4,7 @@
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kth Largest Element in an Array | ama-non</title>
-<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1559059994745">
+<link rel="shortcut icon" href="https://ama-non.github.io/favicon.ico?v=1563961822810">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://ama-non.github.io/styles/main.css">
 
@@ -18,7 +18,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://ama-non.github.io">
-  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1559059994745" alt="">
+  <img class="avatar" src="https://ama-non.github.io/images/avatar.png?v=1563961822810" alt="">
   </a>
   <h1 class="site-title">
     ama-non
@@ -95,13 +95,13 @@
             
             <div class="post-content">
               <p>Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.</p>
-<p><strong>Example 1:</strong><br>
-<strong>Input:</strong> [3,2,1,5,6,4] and k = 2
+<p><strong>Example 1:</strong><br><br>
+<strong>Input:</strong> [3,2,1,5,6,4] and k = 2<br>
 <strong>Output:</strong> 5</p>
-<p><strong>Example 2:</strong><br>
-<strong>Input:</strong> [3,2,3,1,2,4,5,5,6] and k = 4
+<p><strong>Example 2:</strong><br><br>
+<strong>Input:</strong> [3,2,3,1,2,4,5,5,6] and k = 4<br>
 <strong>Output:</strong> 4</p>
-<p><strong>Note：</strong>
+<p><strong>Note：</strong><br>
 You may assume k is always valid, 1 ≤ k ≤ array's length.</p>
 <hr>
 <h3 id="思路">思路：</h3>
@@ -111,9 +111,9 @@ You may assume k is always valid, 1 ≤ k ≤ array's length.</p>
 <li>利用堆进行部分排序。维护一个大根堆，将数组元素全部压入堆，然后弹出k次，第k个就是答案。时间复杂度O(klogn)，空间复杂度O(n)</li>
 <li>选择排序，第k次选择后即可得到第k大的数，时间复杂度O(nk)，空间复杂度O(1)</li>
 <li>堆排序，维护一个k大小的小根堆，将数组中的每个元素与堆顶元素进行比较，如果比堆顶元素大，则删除堆顶元素并添加该元素，如果比堆顶元素小，则什么也不做，继续下一个元素。时间复杂度O(nlogk)，空间复杂度O(k)。</li>
-<li>利用快速排序中的partition思想，从数组中随机选择一个元素x，把数组划分为前后两部分sa和sb，sa中的元素小于x，sb中的元素大于或等于x。这时有两种情况：
-sa的元素个数小于k，则递归求解sb中的第k-|sa|大的元素
-sa的元素个数大于或等于k，则递归求解sa中的第k大的元素
+<li>利用快速排序中的partition思想，从数组中随机选择一个元素x，把数组划分为前后两部分sa和sb，sa中的元素小于x，sb中的元素大于或等于x。这时有两种情况：<br>
+sa的元素个数小于k，则递归求解sb中的第k-|sa|大的元素<br>
+sa的元素个数大于或等于k，则递归求解sa中的第k大的元素<br>
 时间复杂度O(n)，空间复杂度O(1)</li>
 </ol>
 <p>思路4和5比较高效，可以接受，其他思路太慢了，不采纳。</p>
